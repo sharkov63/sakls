@@ -1,6 +1,6 @@
 ///
 /// \file LayoutAPI.h
-/// Defines Layout API.
+/// This file defines the Layout API.
 ///
 #ifndef SAKLS_LAYOUT_API_H
 #define SAKLS_LAYOUT_API_H
@@ -9,6 +9,12 @@
 extern "C" {
 #endif
 
+/// Identifies Layout API version.
+///
+/// Upon making any ABI-breaking changes in Layout API,
+/// this number has to be incremented.
+#define SAKLS_LAYOUT_API_VERSION 1
+
 /// Identifier of a keyboard layout within Layout API.
 ///
 /// Negative values mean an invalid layout (or an error).
@@ -16,7 +22,9 @@ typedef int sakls_LayoutID;
 
 struct sakls_LayoutDescription;
 
-#define SAKLS_UNAVALIABLE_LAYOUT_LIST (-1)
+/// Value of \p layoutListLen field of sakls_LayoutAPI struct,
+/// which indicates that layout list is not available.
+#define SAKLS_UNAVAILABLE_LAYOUT_LIST (-1)
 
 /// Layout API: an interface providing getting & setting
 /// current keyboard layout.
@@ -26,6 +34,8 @@ struct sakls_LayoutDescription;
 ///  - Implementations which call an external, platform-dependent library to
 ///  switch current system keyboard layout. These libraries, for example, are
 ///  xkb-switch (and it's derivatives like xkb-switch-win); im-select; etc.
+///  These implementations are often produced by Layout Plugins (see
+///  LayoutPlugin.h for more details).
 ///  - Implementations which switch an input method inside an application.
 ///  For example, switching 'iminsert' option in Vim between 0 and 1.
 ///  These implementations are useful when it's not possible to use a "real"
@@ -42,6 +52,9 @@ struct sakls_LayoutDescription;
 struct sakls_LayoutAPI {
   /// An opaque pointer to the implementation of Layout API,
   /// which is passed to every method.
+  ///
+  /// If it is NULL, then the Layout API is invalid. For example, an error
+  /// happened while producing the implementation.
   void *const impl;
 
   /// Default keyboard layout ID. Must be non-negative.
@@ -68,7 +81,7 @@ struct sakls_LayoutAPI {
 
   /// The length of the layout list.
   ///
-  /// The value of SAKLS_UNAVALIABLE_LAYOUT_LIST means that the layout list is
+  /// The value of SAKLS_UNAVAILABLE_LAYOUT_LIST means that the layout list is
   /// not available.
   const int layoutListLen;
 
@@ -76,14 +89,15 @@ struct sakls_LayoutAPI {
   /// layouts.
   ///
   /// It's an array indexed with layout IDs. It's length is layoutListLen.
-  /// If layoutListLen is equal to SAKLS_UNAVALIABLE_LAYOUT_LIST, then the
+  /// If layoutListLen is equal to SAKLS_UNAVAILABLE_LAYOUT_LIST, then the
   /// layout list is not available.
   const struct sakls_LayoutDescription *const layoutList;
 };
 
 /// Describes a keyboard layout.
 struct sakls_LayoutDescription {
-  /// The unique name of this keyboard-layout.
+  /// The name of this keyboard layout. Must be unique among all other layouts
+  /// in the corresponding Layout API.
   const char *name;
 };
 
