@@ -29,7 +29,7 @@ public:
 
   /// Get Syntax Stack of the current position in the currently edited file.
   ///
-  /// \return Reference to the Syntax Stack
+  /// \return Reference to the Syntax Stack.
   /// \throws SyntaxAPIException
   SyntaxStackRef getSyntaxStack();
 };

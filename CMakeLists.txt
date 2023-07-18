@@ -10,5 +10,6 @@ add_library(SaklsAPI INTERFACE)
 target_include_directories(SaklsAPI INTERFACE ${SAKLS_INCLUDE_DIRS})
 
 # SAKLS shared library.
-add_library(SAKLS SHARED src/LayoutAPI.cpp src/SyntaxAPI.cpp)
+add_library(SAKLS SHARED src/Engine.cpp src/EngineAPI.cpp src/LayoutAPI.cpp
+                         src/SyntaxAPI.cpp)
 target_include_directories(SAKLS PRIVATE ${SAKLS_INCLUDE_DIRS})
