@@ -69,6 +69,11 @@ struct sakls_SyntaxAPI {
   /// \return Reference to the Syntax Stack. On error, the \p addr field
   /// of the reference structure is zero.
   sakls_SyntaxStackRef (*getSyntaxStack)(void *impl);
+
+  /// Destroy the implementation of Syntax API, free all the resources it owns.
+  ///
+  /// \param impl Pointer to the implementation of Syntax API.
+  void (*destroy)(void *impl);
 };
 
 #ifdef __cplusplus
