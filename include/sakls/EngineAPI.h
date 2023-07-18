@@ -12,12 +12,11 @@
 #ifndef SAKLS_ENGINE_API_H
 #define SAKLS_ENGINE_API_H
 
+#include "sakls/ExternC.h"
 #include "sakls/LayoutAPI.h"
 #include "sakls/SyntaxAPI.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+SAKLS_EXTERN_C_BEGIN
 
 /// Identifies Engine API version.
 ///
@@ -50,8 +49,6 @@ void sakls_engine_delete(void *engine);
 /// \param engine Pointer to SAKLS Engine.
 void sakls_engine_updateNewSyntaxStack(void *engine);
 
-#ifdef __cplusplus
-}
-#endif
+SAKLS_EXTERN_C_END
 
 #endif
