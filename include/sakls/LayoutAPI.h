@@ -5,9 +5,9 @@
 #ifndef SAKLS_LAYOUT_API_H
 #define SAKLS_LAYOUT_API_H
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+#include "sakls/ExternC.h"
+
+SAKLS_EXTERN_C_BEGIN
 
 /// Identifies Layout API version.
 ///
@@ -102,8 +102,6 @@ struct sakls_LayoutDescription {
   const char *name;
 };
 
-#ifdef __cplusplus
-}
-#endif
+SAKLS_EXTERN_C_END
 
 #endif

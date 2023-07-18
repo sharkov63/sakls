@@ -6,11 +6,10 @@
 #ifndef SAKLS_LAYOUT_PLUGIN_H
 #define SAKLS_LAYOUT_PLUGIN_H
 
+#include "sakls/ExternC.h"
 #include "sakls/LayoutAPI.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+SAKLS_EXTERN_C_BEGIN
 
 /// Information about a loaded Layout Plugin.
 ///
@@ -56,8 +55,6 @@ struct sakls_LayoutPluginInfo {
 /// ```
 struct sakls_LayoutPluginInfo sakls_getLayoutPluginInfo();
 
-#ifdef __cplusplus
-}
-#endif
+SAKLS_EXTERN_C_END
 
 #endif

@@ -6,9 +6,9 @@
 #ifndef SAKLS_SYNTAX_API_H
 #define SAKLS_SYNTAX_API_H
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+#include "sakls/ExternC.h"
+
+SAKLS_EXTERN_C_BEGIN
 
 /// Identifies Syntax API version.
 ///
@@ -76,8 +76,6 @@ struct sakls_SyntaxAPI {
   void (*destroy)(void *impl);
 };
 
-#ifdef __cplusplus
-}
-#endif
+SAKLS_EXTERN_C_END
 
 #endif
