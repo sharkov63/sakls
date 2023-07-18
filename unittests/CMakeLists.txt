@@ -1,2 +1,2 @@
-add_executable(SaklsUnitTests Main.cpp)
-target_link_libraries(SaklsUnitTests PUBLIC doctest)
+add_executable(SaklsUnitTests Main.cpp SchemaSerialization.cpp)
+target_link_libraries(SaklsUnitTests PRIVATE SAKLS doctest)
