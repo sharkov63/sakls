@@ -2,18 +2,22 @@
 
 using namespace sakls;
 
-LayoutAPI::LayoutAPI(sakls_LayoutAPI &&cAPI) : cAPI(std::move(cAPI)) {}
+///===---------------------------------------------------------------------===//
+/// LayoutAPIRef
+///===---------------------------------------------------------------------===//
 
-LayoutAPI::~LayoutAPI() { cAPI.destroy(cAPI.impl); }
+LayoutAPIRef::LayoutAPIRef(sakls_LayoutAPI cAPI) : cAPI(cAPI) {}
 
-LayoutID LayoutAPI::getLayout() const {
+LayoutID LayoutAPIRef::getLayout() const {
   LayoutID layout = cAPI.getLayout(cAPI.impl);
   if (layout < 0)
     throw LayoutAPIException();
   return layout;
 }
 
-void LayoutAPI::setLayout(LayoutID layout) {
+void LayoutAPIRef::setLayout(LayoutID layout) {
   if (cAPI.setLayout(cAPI.impl, layout))
     throw LayoutAPIException();
 }
+
+void LayoutAPIRef::destroy() { cAPI.destroy(cAPI.impl); }

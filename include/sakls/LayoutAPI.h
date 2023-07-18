@@ -1,6 +1,6 @@
 ///
 /// \file LayoutAPI.h
-/// This file defines the C Layout API.
+/// This file defines the C SAKLS Layout API.
 ///
 #ifndef SAKLS_LAYOUT_API_H
 #define SAKLS_LAYOUT_API_H
@@ -13,7 +13,9 @@ extern "C" {
 ///
 /// Upon making any ABI-breaking changes in Layout API,
 /// this number has to be incremented.
-#define SAKLS_LAYOUT_API_VERSION 1
+///
+/// FIXME: upon release start this with 1
+#define SAKLS_LAYOUT_API_VERSION 0
 
 /// Identifier of a keyboard layout within Layout API.
 ///
@@ -26,16 +28,15 @@ struct sakls_LayoutDescription;
 /// which indicates that layout list is not available.
 #define SAKLS_UNAVAILABLE_LAYOUT_LIST (-1)
 
-/// Layout API: an interface providing getting & setting
-/// current keyboard layout.
+/// Layout API: interface providing getting & setting current keyboard layout.
 ///
 /// Layout API is agnostic of the underlying implementation, which actually
 /// handles layout switching. Its possible implementations are:
 ///  - Implementations which call an external, platform-dependent library to
 ///  switch current system keyboard layout. These libraries, for example, are
 ///  xkb-switch (and it's derivatives like xkb-switch-win); im-select; etc.
-///  These implementations are often produced by Layout Plugins (see
-///  LayoutPlugin.h for more details).
+///  These implementations are often produced by Layout Plugins
+///  (see sakls/LayoutPlugin.h for more details).
 ///  - Implementations which switch an input method inside an application.
 ///  For example, switching 'iminsert' option in Vim between 0 and 1.
 ///  These implementations are useful when it's not possible to use a "real"
@@ -46,7 +47,7 @@ struct sakls_LayoutDescription;
 /// The mandatory part of the interface is getLayout and setLayout methods
 /// as well as defaultLayout. Optionally, an implementation can provide
 /// the list of all available layouts with their corresponding unique names.
-/// This list is necessary for writing a human-readable sakls schema.
+/// This list is necessary for writing a human-readable SAKLS schema.
 /// It is assumed that this list never changes during the whole usage of
 /// Layout API.
 struct sakls_LayoutAPI {
