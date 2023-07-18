@@ -1,6 +1,6 @@
 ///
 /// \file LayoutAPI.h
-/// This file defines the Layout API.
+/// This file defines the C Layout API.
 ///
 #ifndef SAKLS_LAYOUT_API_H
 #define SAKLS_LAYOUT_API_H
