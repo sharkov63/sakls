@@ -8,3 +8,7 @@ set(SAKLS_INCLUDE_DIRS ${SAKLS_DIR}/include)
 # SaklsAPI interface library.
 add_library(SaklsAPI INTERFACE)
 target_include_directories(SaklsAPI INTERFACE ${SAKLS_INCLUDE_DIRS})
+
+# SAKLS shared library.
+add_library(SAKLS SHARED src/LayoutAPI.cpp)
+target_include_directories(SAKLS PRIVATE ${SAKLS_INCLUDE_DIRS})
