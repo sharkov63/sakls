@@ -11,22 +11,16 @@ SAKLS_EXTERN_C_BEGIN
 
 /// Identifies Layout API version.
 ///
-/// Upon making any ABI-breaking changes in Layout API,
+/// Upon making any ABI compatibility breaking changes in Layout API,
 /// this number has to be incremented.
 ///
 /// TODO: upon release start this with 1
 #define SAKLS_LAYOUT_API_VERSION 0
 
 /// Identifier of a keyboard layout within Layout API.
-///
-/// Negative values mean an invalid layout (or an error).
-typedef int sakls_LayoutID;
+typedef unsigned sakls_LayoutID;
 
 struct sakls_LayoutDescription;
-
-/// Value of \p layoutListLen field of sakls_LayoutAPI struct,
-/// which indicates that layout list is not available.
-#define SAKLS_UNAVAILABLE_LAYOUT_LIST (-1)
 
 /// Layout API: interface providing getting & setting current keyboard layout.
 ///
@@ -54,23 +48,26 @@ struct sakls_LayoutAPI {
   /// An opaque pointer to the implementation of Layout API,
   /// which is passed to every method.
   ///
-  /// If it is NULL, then the Layout API is invalid. For example, an error
+  /// If it is null, then the Layout API is invalid. For example, an error
   /// happened while producing the implementation.
   void *impl;
 
-  /// Default keyboard layout ID. Must be non-negative.
+  /// Default keyboard layout ID.
   sakls_LayoutID defaultLayout;
 
   /// Get current keyboard layout.
   ///
   /// \param impl Pointer to the implementation of Layout API.
-  /// \return The current keyboard layout ID or a negative value
-  /// in case of any error.
-  sakls_LayoutID (*getLayout)(void *impl);
+  /// \param[out] layout Place to put the current keyboard layout ID.
+  /// \return zero on success; non-zero value on error.
+  int (*getLayout)(void *impl, sakls_LayoutID *layout);
 
   /// Set current keyboard layout.
   ///
-  /// \param impl   Pointer to the implementation of Layout API.
+  /// It is not required that the function sets the layout immediately:
+  /// it is sufficient to send a request to set the layout.
+  ///
+  /// \param impl Pointer to the implementation of Layout API.
   /// \param layout ID of the keyboard layout to set to.
   /// \return zero on success; non-zero value on error.
   int (*setLayout)(void *impl, sakls_LayoutID layout);
@@ -81,17 +78,14 @@ struct sakls_LayoutAPI {
   void (*destroy)(void *impl);
 
   /// The length of the layout list.
-  ///
-  /// The value of SAKLS_UNAVAILABLE_LAYOUT_LIST means that the layout list is
-  /// not available.
   int layoutListLen;
 
   /// The layout list: an optional list which specifies all available keyboard
   /// layouts.
   ///
   /// It's an array indexed with layout IDs. It's length is layoutListLen.
-  /// If layoutListLen is equal to SAKLS_UNAVAILABLE_LAYOUT_LIST, then the
-  /// layout list is not available.
+  ///
+  /// If this pointer is null, then the layout list is not available.
   const struct sakls_LayoutDescription *layoutList;
 };
 

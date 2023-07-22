@@ -8,7 +8,7 @@
 
 #include "sakls/LayoutAPI.h"
 
-#include <exception>
+#include <stdexcept>
 
 namespace sakls {
 
@@ -19,7 +19,10 @@ using LayoutID = ::sakls_LayoutID;
 using LayoutDescription = ::sakls_LayoutDescription;
 
 /// An exception which happened during a call to Layout API.
-class LayoutAPIException : public std::exception {};
+class LayoutAPIException : public std::runtime_error {
+public:
+  LayoutAPIException(std::string explanation);
+};
 
 /// A convenience C++ wrapper around sakls_LayoutAPI.
 ///
@@ -30,23 +33,22 @@ class LayoutAPIRef {
   sakls_LayoutAPI cAPI;
 
 public:
+  /// Convert from C API.
   explicit LayoutAPIRef(sakls_LayoutAPI cAPI);
 
   /// Get current keyboard layout.
   ///
-  /// \return Non-negative valid layout ID.
+  /// \return ID of the current keyboard layout.
   /// \throws LayoutAPIException
   LayoutID getLayout() const;
 
   /// Set current keyboard layout.
   ///
-  /// \param layout Non-negative valid layout ID.
+  /// \param layout ID of the layout to set to.
   /// \throws LayoutAPIException
   void setLayout(LayoutID layout);
 
   /// Get default keyboard layout.
-  ///
-  /// \return Non-negative valid layout ID.
   LayoutID getDefaultLayout() const;
 
   /// Destroy Layout API.
