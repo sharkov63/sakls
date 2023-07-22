@@ -20,4 +20,6 @@ void LayoutAPIRef::setLayout(LayoutID layout) {
     throw LayoutAPIException();
 }
 
+LayoutID LayoutAPIRef::getDefaultLayout() const { return cAPI.defaultLayout; }
+
 void LayoutAPIRef::destroy() { cAPI.destroy(cAPI.impl); }

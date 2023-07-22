@@ -15,6 +15,9 @@ namespace sakls {
 /// Identifier of a keyboard layout within Layout API.
 using LayoutID = ::sakls_LayoutID;
 
+/// Describes a keyboard layout.
+using LayoutDescription = ::sakls_LayoutDescription;
+
 /// An exception which happened during a call to Layout API.
 class LayoutAPIException : public std::exception {};
 
@@ -31,15 +34,20 @@ public:
 
   /// Get current keyboard layout.
   ///
-  /// \return Non-negative valid layout ID
+  /// \return Non-negative valid layout ID.
   /// \throws LayoutAPIException
   LayoutID getLayout() const;
 
   /// Set current keyboard layout.
   ///
-  /// \param layout Non-negative valid layout ID
+  /// \param layout Non-negative valid layout ID.
   /// \throws LayoutAPIException
   void setLayout(LayoutID layout);
+
+  /// Get default keyboard layout.
+  ///
+  /// \return Non-negative valid layout ID.
+  LayoutID getDefaultLayout() const;
 
   /// Destroy Layout API.
   void destroy();
