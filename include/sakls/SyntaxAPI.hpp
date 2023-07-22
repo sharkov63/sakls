@@ -8,7 +8,7 @@
 
 #include "sakls/SyntaxAPI.h"
 
-#include <exception>
+#include <stdexcept>
 
 namespace sakls {
 
@@ -32,7 +32,10 @@ public:
 using SyntaxStackRef = ::sakls_SyntaxStackRef;
 
 /// An exception which can be issued during a Syntax API call.
-class SyntaxAPIException : public std::exception {};
+class SyntaxAPIException : public std::runtime_error {
+public:
+  SyntaxAPIException(std::string explanation);
+};
 
 /// A convenience C++ wrapper around sakls_SyntaxAPI.
 ///
@@ -43,11 +46,12 @@ class SyntaxAPIRef {
   sakls_SyntaxAPI cAPI;
 
 public:
+  /// Convert from C API.
   explicit SyntaxAPIRef(sakls_SyntaxAPI cAPI);
 
-  /// Get Syntax Stack of the current position in the currently edited file.
+  /// Get the syntax stack of the current position in the currently edited file.
   ///
-  /// \return Reference to the Syntax Stack.
+  /// \return Reference to the syntax stack.
   /// \throws SyntaxAPIException
   SyntaxStackRef getSyntaxStack() const;
 };

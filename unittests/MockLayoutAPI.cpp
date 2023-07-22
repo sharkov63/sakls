@@ -23,8 +23,10 @@ MockLayoutAPI::MockLayoutAPI(std::vector<std::string> layoutNames)
           .impl = this,
           .defaultLayout = 0,
           .getLayout =
-              [](void *impl) {
-                return reinterpret_cast<MockLayoutAPI *>(impl)->currentLayout;
+              [](void *impl, LayoutID *layout) {
+                *layout =
+                    reinterpret_cast<MockLayoutAPI *>(impl)->currentLayout;
+                return 0;
               },
           .setLayout =
               [](void *impl, LayoutID layout) {

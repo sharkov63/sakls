@@ -12,7 +12,7 @@ SAKLS_EXTERN_C_BEGIN
 
 /// Identifies Syntax API version.
 ///
-/// Upon making any ABI-breaking changes in Syntax API,
+/// Upon making any ABI compatibility breaking changes in Syntax API,
 /// this number has to be incremented.
 ///
 /// TODO: upon release start this with 1
@@ -65,15 +65,16 @@ struct sakls_SyntaxAPI {
   /// An opaque pointer to the implementation of Syntax API,
   /// which is passed to every method.
   ///
-  /// If it is NULL, then the Syntax API is invalid. For example, an error
+  /// If it is null, then the Syntax API is invalid. For example, an error
   /// happened while producing the implementation.
   void *impl;
 
   /// Get the syntax stack for the current cursor position.
   ///
   /// \param impl Pointer to the implementation of Syntax API.
-  /// \return Reference to the syntax stack.
-  sakls_SyntaxStackRef (*getSyntaxStack)(void *impl);
+  /// \param[out] syntaxStack
+  /// \return zero on success; non-zero value on error.
+  int (*getSyntaxStack)(void *impl, sakls_SyntaxStackRef *syntaxStack);
 
   /// Destroy the implementation of Syntax API, free all the resources it owns.
   ///

@@ -11,10 +11,11 @@ MockSyntaxAPI::MockSyntaxAPI()
     : cAPI{
           .impl = this,
           .getSyntaxStack =
-              [](void *impl) {
+              [](void *impl, SyntaxStackRef *syntaxStack) {
                 MockSyntaxAPI &_this = *reinterpret_cast<MockSyntaxAPI *>(impl);
-                return SyntaxStackRef{.addr = _this.syntaxStack.data(),
-                                      .size = _this.syntaxStack.size()};
+                *syntaxStack = SyntaxStackRef{.addr = _this.syntaxStack.data(),
+                                              .size = _this.syntaxStack.size()};
+                return 0;
               },
           .destroy = [](void *) {},
       } {}
