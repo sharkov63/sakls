@@ -14,7 +14,7 @@ SAKLS_EXTERN_C_BEGIN
 /// Upon making any ABI-breaking changes in Layout API,
 /// this number has to be incremented.
 ///
-/// FIXME: upon release start this with 1
+/// TODO: upon release start this with 1
 #define SAKLS_LAYOUT_API_VERSION 0
 
 /// Identifier of a keyboard layout within Layout API.
@@ -42,7 +42,7 @@ struct sakls_LayoutDescription;
 ///  These implementations are useful when it's not possible to use a "real"
 ///  implementation switching system keyboard layout.
 ///  - Mock implementation which operates on a local variable. Useful for
-///  unit-testing.
+///  unit-testing. See "unittests/MockLayoutAPI.hpp".
 ///
 /// The mandatory part of the interface is getLayout and setLayout methods
 /// as well as defaultLayout. Optionally, an implementation can provide
@@ -56,10 +56,10 @@ struct sakls_LayoutAPI {
   ///
   /// If it is NULL, then the Layout API is invalid. For example, an error
   /// happened while producing the implementation.
-  void *const impl;
+  void *impl;
 
   /// Default keyboard layout ID. Must be non-negative.
-  const sakls_LayoutID defaultLayout;
+  sakls_LayoutID defaultLayout;
 
   /// Get current keyboard layout.
   ///
@@ -84,7 +84,7 @@ struct sakls_LayoutAPI {
   ///
   /// The value of SAKLS_UNAVAILABLE_LAYOUT_LIST means that the layout list is
   /// not available.
-  const int layoutListLen;
+  int layoutListLen;
 
   /// The layout list: an optional list which specifies all available keyboard
   /// layouts.
@@ -92,7 +92,7 @@ struct sakls_LayoutAPI {
   /// It's an array indexed with layout IDs. It's length is layoutListLen.
   /// If layoutListLen is equal to SAKLS_UNAVAILABLE_LAYOUT_LIST, then the
   /// layout list is not available.
-  const struct sakls_LayoutDescription *const layoutList;
+  const struct sakls_LayoutDescription *layoutList;
 };
 
 /// Describes a keyboard layout.
