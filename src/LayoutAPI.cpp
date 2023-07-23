@@ -13,7 +13,11 @@ LayoutAPIException::LayoutAPIException(std::string explanation)
 /// LayoutAPIRef
 ///===---------------------------------------------------------------------===//
 
+LayoutAPIRef::LayoutAPIRef() : cAPI{.impl = nullptr} {}
+
 LayoutAPIRef::LayoutAPIRef(sakls_LayoutAPI cAPI) : cAPI(cAPI) {}
+
+bool LayoutAPIRef::initialized() const { return cAPI.impl; }
 
 LayoutID LayoutAPIRef::getLayout() const {
   LayoutID layout;
@@ -29,4 +33,18 @@ void LayoutAPIRef::setLayout(LayoutID layout) {
 
 LayoutID LayoutAPIRef::getDefaultLayout() const { return cAPI.defaultLayout; }
 
-void LayoutAPIRef::destroy() { cAPI.destroy(cAPI.impl); }
+void LayoutAPIRef::destroy() {
+  cAPI.destroy(cAPI.impl);
+  cAPI.impl = nullptr;
+}
+
+///===---------------------------------------------------------------------===//
+/// LayoutAPI
+///===---------------------------------------------------------------------===//
+
+LayoutAPI::LayoutAPI(sakls_LayoutAPI cAPI) : LayoutAPIRef(std::move(cAPI)) {}
+
+LayoutAPI::~LayoutAPI() {
+  if (initialized())
+    destroy();
+}

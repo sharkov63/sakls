@@ -23,11 +23,31 @@ SyntaxAPIException::SyntaxAPIException(std::string explanation)
 /// SyntaxAPIRef
 ///===---------------------------------------------------------------------===//
 
+SyntaxAPIRef::SyntaxAPIRef() : cAPI{.impl = nullptr} {}
+
 SyntaxAPIRef::SyntaxAPIRef(sakls_SyntaxAPI cAPI) : cAPI(cAPI) {}
+
+bool SyntaxAPIRef::initialized() const { return cAPI.impl; }
 
 SyntaxStackRef SyntaxAPIRef::getSyntaxStack() const {
   SyntaxStackRef syntaxStack;
   if (cAPI.getSyntaxStack(cAPI.impl, &syntaxStack))
     throw SyntaxAPIException("getSyntaxStack failed");
   return syntaxStack;
+}
+
+void SyntaxAPIRef::destroy() {
+  cAPI.destroy(cAPI.impl);
+  cAPI.impl = nullptr;
+}
+
+///===---------------------------------------------------------------------===//
+/// SyntaxAPI
+///===---------------------------------------------------------------------===//
+
+SyntaxAPI::SyntaxAPI(sakls_SyntaxAPI cAPI) : SyntaxAPIRef(std::move(cAPI)) {}
+
+SyntaxAPI::~SyntaxAPI() {
+  if (initialized())
+    destroy();
 }
