@@ -29,12 +29,20 @@ public:
 /// This wrapper does not own the implementation of Layout API:
 /// when it is destroyed, it does not call destroy method of Layout API.
 class LayoutAPIRef {
+protected:
   /// Underlying C Layout API structure.
   sakls_LayoutAPI cAPI;
 
 public:
+  /// Create uninitialized Layout API reference.
+  LayoutAPIRef();
+
   /// Convert from C API.
   explicit LayoutAPIRef(sakls_LayoutAPI cAPI);
+
+  /// \return true if referenced Layout API is initialized with an
+  /// implementation.
+  bool initialized() const;
 
   /// Get current keyboard layout.
   ///
@@ -53,6 +61,17 @@ public:
 
   /// Destroy Layout API.
   void destroy();
+};
+
+/// A convenience C++ wrapper around sakls_LayoutAPI.
+///
+/// Unlike LayoutAPIRef, this wrapper owns the implementation of Layout API:
+/// in its destructor it calls destroy method of Layout API.
+class LayoutAPI : public LayoutAPIRef {
+public:
+  explicit LayoutAPI(sakls_LayoutAPI cAPI);
+
+  ~LayoutAPI();
 };
 
 } // namespace sakls
