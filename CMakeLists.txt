@@ -1,22 +1,49 @@
 cmake_minimum_required(VERSION 3.16.0)
 
-project(SAKLS)
+# ------------------------------------------------------------------------------
+# SAKLS project
+# ------------------------------------------------------------------------------
+set(SAKLS_VERSION_MAJOR 0)
+set(SAKLS_VERSION_MINOR 1)
+set(SAKLS_VERSION_PATCH 0)
+set(SAKLS_VERSION
+    ${SAKLS_VERSION_MAJOR}.${SAKLS_VERSION_MINOR}.${SAKLS_VERSION_PATCH})
+message(STATUS "Build SAKLS ${SAKLS_VERSION}")
 
-set(SAKLS_DIR ${PROJECT_SOURCE_DIR})
-set(SAKLS_INCLUDE_DIRS ${SAKLS_DIR}/include)
+project(
+  SAKLS
+  VERSION ${SAKLS_VERSION}
+  LANGUAGES C CXX)
 
-# third-party
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+set(SAKLS_PROJECT_DIR ${PROJECT_SOURCE_DIR})
+set(SAKLS_INCLUDE_DIRS ${SAKLS_PROJECT_DIR}/include)
+
+# ------------------------------------------------------------------------------
+# Third-party dependencies
+# ------------------------------------------------------------------------------
 add_subdirectory(third-party/cereal)
 add_subdirectory(third-party/doctest)
 
-# SaklsAPI interface library.
-add_library(SaklsAPI INTERFACE)
-target_include_directories(SaklsAPI INTERFACE ${SAKLS_INCLUDE_DIRS})
+# ------------------------------------------------------------------------------
+# SAKLSInterface interface library
+# ------------------------------------------------------------------------------
+add_library(SAKLSInterface INTERFACE)
+target_include_directories(SAKLSInterface INTERFACE ${SAKLS_INCLUDE_DIRS})
 
-# SAKLS shared library.
+# ------------------------------------------------------------------------------
+# SAKLS shared library
+# ------------------------------------------------------------------------------
 add_library(SAKLS SHARED src/Engine.cpp src/LayoutAPI.cpp src/SyntaxAPI.cpp)
 target_include_directories(SAKLS PUBLIC ${SAKLS_INCLUDE_DIRS})
 target_link_libraries(SAKLS PUBLIC cereal)
 
-# Unit-tests executable.
-add_subdirectory(unittests)
+# ------------------------------------------------------------------------------
+# Unit-tests executable
+# ------------------------------------------------------------------------------
+option(SAKLS_BUILD_TESTS "Build tests" OFF)
+if(SAKLS_BUILD_TESTS)
+  add_subdirectory(unittests)
+endif()
