@@ -26,6 +26,7 @@ set(SAKLS_INCLUDE_DIRS ${SAKLS_PROJECT_DIR}/include)
 # ------------------------------------------------------------------------------
 add_subdirectory(third-party/cereal)
 add_subdirectory(third-party/doctest)
+add_subdirectory(third-party/dylib)
 
 # ------------------------------------------------------------------------------
 # SAKLSInterface interface library
@@ -39,6 +40,7 @@ target_include_directories(SAKLSInterface INTERFACE ${SAKLS_INCLUDE_DIRS})
 add_library(SAKLS SHARED src/Engine.cpp src/LayoutAPI.cpp src/SyntaxAPI.cpp)
 target_include_directories(SAKLS PUBLIC ${SAKLS_INCLUDE_DIRS})
 target_link_libraries(SAKLS PUBLIC cereal)
+target_link_libraries(SAKLS PRIVATE dylib)
 
 # ------------------------------------------------------------------------------
 # Unit-tests executable

@@ -27,6 +27,9 @@ public:
   /// Get C++ Layout API reference.
   LayoutAPIRef getAPI() const;
 
+  /// Get C Layout API reference.
+  sakls_LayoutAPI getCAPI() const;
+
   /// Get current keyboard layout.
   LayoutID getLayout() const;
 
