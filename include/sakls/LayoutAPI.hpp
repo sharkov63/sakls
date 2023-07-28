@@ -1,47 +1,46 @@
 ///
 /// \file LayoutAPI.hpp
-/// This file contains useful C++ wrappers
-/// and convenience functions for the C SAKLS Layout API.
+/// This file contains definitions of C++ SAKLS Layout API.
 ///
 #ifndef SAKLS_LAYOUT_API_HPP
 #define SAKLS_LAYOUT_API_HPP
 
 #include "sakls/LayoutAPI.h"
 
+#include <filesystem>
+#include <memory>
 #include <stdexcept>
 
 namespace sakls {
 
-/// Identifier of a keyboard layout within Layout API.
+/// Identifier of a keyboard layout within a layout API implementation.
 using LayoutID = ::sakls_LayoutID;
 
 /// Describes a keyboard layout.
 using LayoutDescription = ::sakls_LayoutDescription;
 
-/// An exception which happened during a call to Layout API.
+/// An exception related to layout API
+/// (happened during a call to layout API or during it's construction/loading).
 class LayoutAPIException : public std::runtime_error {
 public:
   LayoutAPIException(std::string explanation);
 };
 
-/// A convenience C++ wrapper around sakls_LayoutAPI.
-///
-/// This wrapper does not own the implementation of Layout API:
-/// when it is destroyed, it does not call destroy method of Layout API.
+/// A non-owning reference to a layout API implementation.
+/// (It does not call \p destroy layout API method upon its destruction.)
 class LayoutAPIRef {
 protected:
-  /// Underlying C Layout API structure.
+  /// Underlying C layout API.
   sakls_LayoutAPI cAPI;
 
 public:
-  /// Create uninitialized Layout API reference.
+  /// Create uninitialized layout API reference.
   LayoutAPIRef();
 
-  /// Convert from C API.
+  /// Obtain reference of C layout API.
   explicit LayoutAPIRef(sakls_LayoutAPI cAPI);
 
-  /// \return true if referenced Layout API is initialized with an
-  /// implementation.
+  /// \return true if the object references a valid layout API implementation.
   bool initialized() const;
 
   /// Get current keyboard layout.
@@ -59,19 +58,47 @@ public:
   /// Get default keyboard layout.
   LayoutID getDefaultLayout() const;
 
-  /// Destroy Layout API.
+  /// Destroy the layout API implementation (if it's initialized).
   void destroy();
 };
 
-/// A convenience C++ wrapper around sakls_LayoutAPI.
+/// A C++ layout API implementation object, which owns all the required
+/// resources and the implementation itself.
+/// (\p destroy method of layout API is called in the destructor.)
 ///
-/// Unlike LayoutAPIRef, this wrapper owns the implementation of Layout API:
-/// in its destructor it calls destroy method of Layout API.
+/// Inherits LayoutAPIRef only to expose useful public methods.
 class LayoutAPI : public LayoutAPIRef {
 public:
   explicit LayoutAPI(sakls_LayoutAPI cAPI);
 
-  ~LayoutAPI();
+  virtual ~LayoutAPI();
+
+  /// Load a layout plugin; produce and obtain a layout API implementation.
+  /// (The implementation will also own the connection to the plugin.)
+  ///
+  /// \param lib Full path to the layout plugin library (including all
+  /// decorations and the file extension). May be absolute or relative to the
+  /// current working directory.
+  /// \param producerConfig An opaque pointer to plugin-defined configuration
+  /// data.
+  /// \return Pointer to valid layout API implementation.
+  /// \throws LayoutAPIException
+  static std::unique_ptr<LayoutAPI> loadPlugin(const std::filesystem::path &lib,
+                                               void *producerConfig);
+  /// \param dir Path to the directory containing the layout plugin.
+  /// \param libName Name of the layout plugin library (without decorations and
+  /// file extensions; e.g. 'myplug' and not 'libmyplug.so' for Unix).
+  /// \throws LayoutAPIException
+  static std::unique_ptr<LayoutAPI> loadPlugin(const std::filesystem::path &dir,
+                                               const std::string &libName,
+                                               void *producerConfig);
+  /// Load a system-installed layout plugin library.
+  ///
+  /// \param libName Name of the layout plugin library (without decorations and
+  /// file extensions; e.g. 'myplug' and not 'libmyplug.so' for Unix).
+  /// \throws LayoutAPIException
+  static std::unique_ptr<LayoutAPI> loadPlugin(const std::string &libName,
+                                               void *producerConfig);
 };
 
 } // namespace sakls

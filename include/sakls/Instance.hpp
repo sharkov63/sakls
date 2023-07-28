@@ -14,7 +14,7 @@ namespace sakls {
 /// everything necessary for SAKLS.
 class Instance {
 public:
-  LayoutAPI layoutAPI;
+  std::unique_ptr<LayoutAPI> layoutAPI;
   SyntaxAPI syntaxAPI;
   Engine engine;
 };

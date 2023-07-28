@@ -50,6 +50,8 @@ MockLayoutAPI::MockLayoutAPI(size_t layoutNum)
 
 LayoutAPIRef MockLayoutAPI::getAPI() const { return LayoutAPIRef(cAPI); }
 
+sakls_LayoutAPI MockLayoutAPI::getCAPI() const { return cAPI; }
+
 LayoutID MockLayoutAPI::getLayout() const { return currentLayout; }
 
 void MockLayoutAPI::setLayout(LayoutID layout) { currentLayout = layout; }
