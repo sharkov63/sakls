@@ -52,7 +52,7 @@ struct sakls_SyntaxStackRef {
   /// Address of the first element in the array representation of this syntax
   /// stack, which corresponds to the bottom of the stack. If \p size is zero,
   /// this is allowed to be null.
-  sakls_SyntaxNode *addr;
+  struct sakls_SyntaxNode *addr;
 
   /// Size of this syntax stack. Can be zero, which means that the stack is
   /// empty and its top is the fictional syntax node.
@@ -74,7 +74,7 @@ struct sakls_SyntaxAPI {
   /// \param impl Pointer to the implementation of Syntax API.
   /// \param[out] syntaxStack
   /// \return zero on success; non-zero value on error.
-  int (*getSyntaxStack)(void *impl, sakls_SyntaxStackRef *syntaxStack);
+  int (*getSyntaxStack)(void *impl, struct sakls_SyntaxStackRef *syntaxStack);
 
   /// Destroy the implementation of Syntax API, free all the resources it owns.
   ///
