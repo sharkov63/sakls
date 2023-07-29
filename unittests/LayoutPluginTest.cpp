@@ -2,7 +2,7 @@
 /// \file LayoutPluginTest.cpp
 /// This file tests layout plugin loading functionality.
 ///
-#include "SAKLSUnittestsBinaryDir.h"
+#include "BinaryDir.h"
 #include "doctest/doctest.h"
 #include "sakls/LayoutAPI.hpp"
 
@@ -13,7 +13,7 @@ namespace {
 TEST_CASE("Layout Plugin") {
   auto layoutAPI =
       LayoutAPI::loadPlugin(std::filesystem::path(SAKLS_UNITTESTS_BINARY_DIR),
-                            "SAKLSMockLayoutPlugin", nullptr);
+                            "SAKLS_MockLayoutPlugin", nullptr);
   REQUIRE(layoutAPI != nullptr);
   CHECK(layoutAPI->getLayout() == 0);
   layoutAPI->setLayout(1);
@@ -30,7 +30,7 @@ TEST_CASE("Layout Plugin: pass producerConfig") {
   LayoutID defaultLayout = 1;
   auto layoutAPI =
       LayoutAPI::loadPlugin(std::filesystem::path(SAKLS_UNITTESTS_BINARY_DIR),
-                            "SAKLSMockLayoutPlugin", &defaultLayout);
+                            "SAKLS_MockLayoutPlugin", &defaultLayout);
   REQUIRE(layoutAPI != nullptr);
   CHECK(layoutAPI->getDefaultLayout() == 1);
 }
