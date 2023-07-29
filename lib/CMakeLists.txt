@@ -1,4 +1,12 @@
 # ------------------------------------------------------------------------------
+# Third-party dependencies
+# ------------------------------------------------------------------------------
+add_subdirectory(${SAKLS_THIRD_PARTY_DIR}/cereal
+                 ${CMAKE_CURRENT_BINARY_DIR}/third-party/cereal)
+add_subdirectory(${SAKLS_THIRD_PARTY_DIR}/dylib
+                 ${CMAKE_CURRENT_BINARY_DIR}/third-party/dylib)
+
+# ------------------------------------------------------------------------------
 # SAKLS shared library
 # ------------------------------------------------------------------------------
 set(SAKLS_LIB_DIR ${CMAKE_CURRENT_SOURCE_DIR})

@@ -19,13 +19,7 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 set(SAKLS_PROJECT_DIR ${PROJECT_SOURCE_DIR})
-
-# ------------------------------------------------------------------------------
-# Third-party dependencies
-# ------------------------------------------------------------------------------
-add_subdirectory(third-party/cereal)
-add_subdirectory(third-party/doctest)
-add_subdirectory(third-party/dylib)
+set(SAKLS_THIRD_PARTY_DIR ${SAKLS_PROJECT_DIR}/third-party)
 
 # ------------------------------------------------------------------------------
 # SAKLS_CAPI C interface library
@@ -44,6 +38,6 @@ endif()
 # SAKLS unit-tests
 # ------------------------------------------------------------------------------
 option(SAKLS_BUILD_TESTS "Build tests" OFF)
-if(SAKLS_BUILD_TESTS)
+if(SAKLS_BUILD_LIB AND SAKLS_BUILD_TESTS)
   add_subdirectory(unittests)
 endif()

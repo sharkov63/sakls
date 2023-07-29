@@ -5,6 +5,12 @@ set(SAKLS_UNITTESTS_BINARY_DIR ${CMAKE_CURRENT_BINARY_DIR})
 configure_file(BinaryDir.h.in ${CMAKE_CURRENT_BINARY_DIR}/BinaryDir.h)
 
 # ------------------------------------------------------------------------------
+# doctest dependency
+# ------------------------------------------------------------------------------
+add_subdirectory(${SAKLS_THIRD_PARTY_DIR}/doctest
+                 ${SAKLS_UNITTESTS_BINARY_DIR}/third-party/doctest)
+
+# ------------------------------------------------------------------------------
 # SAKLS mock layout plugin
 # ------------------------------------------------------------------------------
 add_library(SAKLS_MockLayoutPlugin MODULE MockLayoutPlugin.cpp
