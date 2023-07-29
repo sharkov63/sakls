@@ -55,6 +55,25 @@ struct sakls_LayoutPluginInfo {
 /// ```
 struct sakls_LayoutPluginInfo sakls_getLayoutPluginInfo();
 
+/// Load a layout plugin; produce and obtain a layout API implementation.
+/// The implementation will also own the connection to the plugin.
+///
+/// \param pluginPath Full path to the layout plugin library (including all
+/// decorations and the file extension). May be absolute or relative to the
+/// current working directory.
+/// \param producerConfig An opaque pointer to plugin-defined configuration
+/// data.
+/// \return Valid layout API implementation; on error object with .impl = null.
+struct sakls_LayoutAPI sakls_loadLayoutPluginByPath(const char *pluginPath,
+                                                    void *producerConfig);
+
+/// Load a system-installed layout plugin library.
+///
+/// \param pluginName Name of the layout plugin library (without decorations and
+/// file extensions; e.g. 'myplug' and not 'libmyplug.so' for Unix).
+struct sakls_LayoutAPI sakls_loadLayoutPluginByName(const char *pluginName,
+                                                    void *producerConfig);
+
 SAKLS_EXTERN_C_END
 
 #endif

@@ -49,6 +49,12 @@ void LayoutAPIRef::destroy() {
 
 LayoutAPI::LayoutAPI(sakls_LayoutAPI cAPI) : LayoutAPIRef(std::move(cAPI)) {}
 
+sakls_LayoutAPI LayoutAPI::release() {
+  sakls_LayoutAPI result = cAPI;
+  cAPI.impl = nullptr;
+  return result;
+}
+
 LayoutAPI::~LayoutAPI() { destroy(); }
 
 ///===---------------------------------------------------------------------===//
@@ -57,28 +63,48 @@ LayoutAPI::~LayoutAPI() { destroy(); }
 
 namespace {
 
-/// An implementation of layout API loaded from a layout plugin.
+/// A loaded layout plugin.
+///
 /// This object owns the layout API as well as the connection to the opened
 /// shared plugin.
 ///
 /// Loading the layout plugin is implemented in a portable fashion using dylib
 /// third-party library.
-class LayoutPlugin : public LayoutAPI {
+struct LayoutPlugin {
   dylib lib;
+  sakls_LayoutAPI layoutAPI;
 
-public:
-  LayoutPlugin(sakls_LayoutAPI cAPI, dylib &&lib)
-      : LayoutAPI(cAPI), lib(std::move(lib)) {}
+  static int getLayout(void *impl, LayoutID *layout) {
+    LayoutPlugin *plugin = reinterpret_cast<LayoutPlugin *>(impl);
+    return plugin->layoutAPI.getLayout(plugin->layoutAPI.impl, layout);
+  }
+  static int setLayout(void *impl, LayoutID layout) {
+    LayoutPlugin *plugin = reinterpret_cast<LayoutPlugin *>(impl);
+    return plugin->layoutAPI.setLayout(plugin->layoutAPI.impl, layout);
+  }
+  static void destroy(void *impl) {
+    LayoutPlugin *plugin = reinterpret_cast<LayoutPlugin *>(impl);
+    plugin->layoutAPI.destroy(plugin->layoutAPI.impl);
+    delete plugin;
+  }
 
-  virtual ~LayoutPlugin() {
-    destroy(); // we should destroy Layout API before destroying the lib
+  sakls_LayoutAPI compose() {
+    return {
+        .impl = this,
+        .defaultLayout = layoutAPI.defaultLayout,
+        .getLayout = getLayout,
+        .setLayout = setLayout,
+        .destroy = destroy,
+        .layoutListLen = layoutAPI.layoutListLen,
+        .layoutList = layoutAPI.layoutList,
+    };
   }
 };
 
 } // namespace
 
 template <typename... Args>
-static std::unique_ptr<LayoutAPI> load(void *producerConfig, Args &&...args) {
+static LayoutAPI load(void *producerConfig, Args &&...args) {
   try {
     dylib lib(std::forward<Args>(args)...);
     if (!lib.has_symbol("sakls_getLayoutPluginInfo"))
@@ -93,24 +119,49 @@ static std::unique_ptr<LayoutAPI> load(void *producerConfig, Args &&...args) {
           std::to_string(pluginInfo.apiVersion) + "; expected " +
           std::to_string(SAKLS_LAYOUT_API_VERSION));
     sakls_LayoutAPI cAPI = pluginInfo.produceLayoutAPIImpl(producerConfig);
-    return std::make_unique<LayoutPlugin>(cAPI, std::move(lib));
+    LayoutPlugin *plugin = new LayoutPlugin{std::move(lib), cAPI};
+    return LayoutAPI(plugin->compose());
   } catch (const dylib::exception &error) {
     throw LayoutAPIException(std::string("Failed to load layout plugin: ") +
                              error.what());
   }
 }
 
-std::unique_ptr<LayoutAPI>
-LayoutAPI::loadPlugin(const std::filesystem::path &plugin,
-                      void *producerConfig) {
+LayoutAPI LayoutAPI::loadPlugin(const std::filesystem::path &plugin,
+                                void *producerConfig) {
   return load(producerConfig, plugin);
 }
-std::unique_ptr<LayoutAPI>
-LayoutAPI::loadPlugin(const std::filesystem::path &dir,
-                      const std::string &libName, void *producerConfig) {
+LayoutAPI LayoutAPI::loadPlugin(const std::filesystem::path &dir,
+                                const std::string &libName,
+                                void *producerConfig) {
   return load(producerConfig, dir, libName);
 }
-std::unique_ptr<LayoutAPI> LayoutAPI::loadPlugin(const std::string &libName,
-                                                 void *producerConfig) {
+LayoutAPI LayoutAPI::loadPlugin(const std::string &libName,
+                                void *producerConfig) {
   return load(producerConfig, libName);
 }
+
+SAKLS_EXTERN_C_BEGIN
+
+sakls_LayoutAPI sakls_loadLayoutPluginByPath(const char *pluginPath,
+                                             void *producerConfig) {
+  try {
+    return LayoutAPI::loadPlugin(std::filesystem::path(pluginPath),
+                                 producerConfig)
+        .release();
+  } catch (...) {
+  }
+  return {.impl = nullptr};
+}
+
+sakls_LayoutAPI sakls_loadLayoutPluginByName(const char *pluginName,
+                                             void *producerConfig) {
+  try {
+    return LayoutAPI::loadPlugin(std::string(pluginName), producerConfig)
+        .release();
+  } catch (...) {
+  }
+  return {.impl = nullptr};
+}
+
+SAKLS_EXTERN_C_END
