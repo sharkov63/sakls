@@ -4,7 +4,6 @@
 ///
 #include "EngineTest.hpp"
 #include "MockLayoutAPI.hpp"
-#include "MockSyntaxAPI.hpp"
 #include "doctest/doctest.h"
 #include "sakls/Engine.hpp"
 
@@ -17,89 +16,71 @@ TEST_CASE_FIXTURE(EngineTest, "Nothing") {}
 
 TEST_CASE_FIXTURE(EngineTest, "Default is memorized") {
   CHECK(getLayout() == 0);
-  push("syntaxA");
-  updateNewSyntaxStack();
+  updateNewSyntaxStack({"syntaxA"});
   setLayout(1);
-  pop();
-  updateNewSyntaxStack();
+  updateNewSyntaxStack({});
   CHECK(getLayout() == 0);
-  push("syntaxA");
-  updateNewSyntaxStack();
+  updateNewSyntaxStack({"syntaxA"});
   CHECK(getLayout() == 1);
 }
 
 TEST_CASE_FIXTURE(EngineTest, "Empty synstack top type is empty string") {
-  updateNewSyntaxStack();
+  updateNewSyntaxStack({});
   setLayout(1);
-  push("syntaxA");
-  updateNewSyntaxStack();
+  updateNewSyntaxStack({"syntaxA"});
   CHECK(getLayout() == 0);
-  push("");
-  updateNewSyntaxStack();
+  updateNewSyntaxStack({"syntaxA", ""});
   CHECK(getLayout() == 1);
 }
 
 TEST_CASE_FIXTURE(EngineTest, "Empty string is explicitly memorized") {
   withSchema(Schema{.memorized = {{"", 1}}});
-  updateNewSyntaxStack();
+  updateNewSyntaxStack({});
   CHECK(getLayout() == 1);
 }
 
 TEST_CASE_FIXTURE(EngineTest, "Forced syntax node") {
   withSchema(Schema{.forced = {{"syntaxA", 1}}});
-  push("syntaxA");
-  updateNewSyntaxStack();
+  updateNewSyntaxStack({"syntaxA"});
   CHECK(getLayout() == 1);
   setLayout(0);
-  updateNewSyntaxStack();
+  updateNewSyntaxStack({"syntaxA"});
   CHECK(getLayout() == 0);
-  push("syntaxB");
-  updateNewSyntaxStack();
+  updateNewSyntaxStack({"syntaxA", "syntaxB"});
   CHECK(getLayout() == 0);
-  pop();
-  updateNewSyntaxStack();
+  updateNewSyntaxStack({"syntaxA"});
   CHECK(getLayout() == 1);
 }
 
 TEST_CASE_FIXTURE(EngineTest, "Ignored syntax node") {
   withSchema(Schema{.ignored = {{"ignored"}}});
-  push("syntaxA");
-  updateNewSyntaxStack();
+  updateNewSyntaxStack({"syntaxA"});
   setLayout(1);
-  push("ignored");
-  updateNewSyntaxStack();
+  updateNewSyntaxStack({"syntaxA", "ignored"});
   CHECK(getLayout() == 1);
-  push("syntaxB");
-  updateNewSyntaxStack();
+  updateNewSyntaxStack({"syntaxA", "ignored", "syntaxB"});
   CHECK(getLayout() == 0);
-  pop();
-  updateNewSyntaxStack();
+  updateNewSyntaxStack({"syntaxA", "ignored"});
   CHECK(getLayout() == 1);
-  pop();
-  updateNewSyntaxStack();
+  updateNewSyntaxStack({"syntaxA"});
   CHECK(getLayout() == 1);
-  pop();
-  updateNewSyntaxStack();
+  updateNewSyntaxStack({});
   CHECK(getLayout() == 0);
 }
 
 TEST_CASE_FIXTURE(EngineTest, "No force same forced syntax node") {
   withSchema(Schema{.forced = {{"forced", 0}}});
-  push("forced");
-  updateNewSyntaxStack();
+  updateNewSyntaxStack({"forced"});
   setLayout(1);
-  push("forced");
-  updateNewSyntaxStack();
+  updateNewSyntaxStack({"forced", "forced"});
   CHECK(getLayout() == 1);
 }
 
 TEST_CASE_FIXTURE(EngineTest, "Force same forced syntax node") {
   withSchema(Schema{.forced = {{"forced", 0}}});
-  push("forced");
-  updateNewSyntaxStack();
+  updateNewSyntaxStack({"forced"});
   setLayout(1);
-  push("forced");
-  updateNewSyntaxStack(true);
+  updateNewSyntaxStack({"forced", "forced"}, true);
   CHECK(getLayout() == 0);
 }
 

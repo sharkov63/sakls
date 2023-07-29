@@ -7,7 +7,7 @@
 
 #include "sakls/LayoutAPI.hpp"
 #include "sakls/Schema.hpp"
-#include "sakls/SyntaxAPI.hpp"
+#include "sakls/Syntax.hpp"
 
 #include <optional>
 
@@ -18,24 +18,22 @@ namespace sakls {
 ///
 /// When the contents or the cursor position of the currently edited file
 /// change, the editor (or a plugin) makes calls to the SAKLS engine
-/// (TODO insert a reference to the API through which the calls are made).
-/// Then, the engine gets the relevant syntax information of the file
-/// through syntax API, makes a decision, and sets the chosen keyboard layout
-/// via layout API.
+/// (TODO insert a reference to the API through which the calls are made),
+/// passing the syntax information as parameters. Then, the engine makes the
+/// decision and sets the chosen keyboard layout via layout API.
 ///
 /// The algorithm, which tells the engine what keyboard layout to set at the
-/// current moment knowing syntax information, is described by Schema class.
+/// current moment, knowing syntax information, is described by Schema class.
 ///
-/// Note that Engine does not take ownership of layout API and syntax API,
-/// but it does take ownership of the schema.
+/// Note that Engine does not take ownership of layout API,
+/// but it does that of the schema.
 class Engine {
   LayoutAPIRef layoutAPI;
-  SyntaxAPIRef syntaxAPI;
   Schema schema;
 
   std::optional<SyntaxNode> current;
 
-  SyntaxNode getRelevantTop() const;
+  SyntaxNode getRelevantTop(SyntaxStackRef synStack) const;
 
   void saveCurrentMemorized();
 
@@ -46,23 +44,23 @@ public:
   ///
   /// The created SAKLS engine has uninitialized state:
   /// it does not observe any syntax stack. To initialize it,
-  /// call updateNewSyntaxStack method.
+  /// call an update method.
   ///
   /// \param layoutAPI Reference to layout API implementation.
-  /// \param syntaxAPI Reference to syntax API implementation.
   /// \param schema SAKLS schema (passed by value).
-  Engine(LayoutAPIRef layoutAPI, SyntaxAPIRef syntaxAPI, Schema schema);
+  Engine(LayoutAPIRef layoutAPI, Schema schema);
 
   /// Update the SAKLS engine: completely replace the currently observed syntax
   /// stack with a new one.
   ///
   /// This is the most flexible way to update a SAKLS engine, but it is also the
-  /// most expensive one: in the worst case it requires to examine the
-  /// whole syntax stack.
+  /// most expensive one: in the worst case it requires to traverse the whole
+  /// syntax stack.
   ///
+  /// \param synStack The new syntax stack.
   /// \param force Change the layout even if the type of the current syntax node
   /// hasn't been changed.
-  void updateNewSyntaxStack(bool force = false);
+  void updateNewSyntaxStack(SyntaxStackRef synStack, bool force = false);
 };
 
 } // namespace sakls
