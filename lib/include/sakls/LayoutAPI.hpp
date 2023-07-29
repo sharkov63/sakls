@@ -62,16 +62,23 @@ public:
   void destroy();
 };
 
-/// A C++ layout API implementation object, which owns all the required
-/// resources and the implementation itself.
-/// (\p destroy method of layout API is called in the destructor.)
+/// A C++ layout API implementation object, which owns all the implementation
+/// (\p destroy method of layout API is called in the destructor).
 ///
 /// Inherits LayoutAPIRef only to expose useful public methods.
-class LayoutAPI : public LayoutAPIRef {
+class LayoutAPI final : public LayoutAPIRef {
 public:
+  /// Obtain ownership of C layout API struct.
   explicit LayoutAPI(sakls_LayoutAPI cAPI);
 
-  virtual ~LayoutAPI();
+  LayoutAPI(const LayoutAPI &other) = delete;
+  LayoutAPI &operator=(const LayoutAPI &other) = delete;
+
+  /// Release ownership, return C layout API.
+  sakls_LayoutAPI release();
+
+  /// Destroy layout API.
+  ~LayoutAPI();
 
   /// Load a layout plugin; produce and obtain a layout API implementation.
   /// (The implementation will also own the connection to the plugin.)
@@ -81,24 +88,22 @@ public:
   /// current working directory.
   /// \param producerConfig An opaque pointer to plugin-defined configuration
   /// data.
-  /// \return Pointer to valid layout API implementation.
+  /// \return Valid layout API implementation.
   /// \throws LayoutAPIException
-  static std::unique_ptr<LayoutAPI> loadPlugin(const std::filesystem::path &lib,
-                                               void *producerConfig);
+  static LayoutAPI loadPlugin(const std::filesystem::path &lib,
+                              void *producerConfig);
   /// \param dir Path to the directory containing the layout plugin.
   /// \param libName Name of the layout plugin library (without decorations and
   /// file extensions; e.g. 'myplug' and not 'libmyplug.so' for Unix).
   /// \throws LayoutAPIException
-  static std::unique_ptr<LayoutAPI> loadPlugin(const std::filesystem::path &dir,
-                                               const std::string &libName,
-                                               void *producerConfig);
+  static LayoutAPI loadPlugin(const std::filesystem::path &dir,
+                              const std::string &libName, void *producerConfig);
   /// Load a system-installed layout plugin library.
   ///
   /// \param libName Name of the layout plugin library (without decorations and
   /// file extensions; e.g. 'myplug' and not 'libmyplug.so' for Unix).
   /// \throws LayoutAPIException
-  static std::unique_ptr<LayoutAPI> loadPlugin(const std::string &libName,
-                                               void *producerConfig);
+  static LayoutAPI loadPlugin(const std::string &libName, void *producerConfig);
 };
 
 } // namespace sakls

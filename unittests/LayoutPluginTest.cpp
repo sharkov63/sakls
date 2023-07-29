@@ -11,19 +11,18 @@ using namespace sakls;
 namespace {
 
 TEST_CASE("Layout Plugin") {
-  auto layoutAPI =
+  LayoutAPI layoutAPI =
       LayoutAPI::loadPlugin(std::filesystem::path(SAKLS_UNITTESTS_BINARY_DIR),
                             "SAKLS_MockLayoutPlugin", nullptr);
-  REQUIRE(layoutAPI != nullptr);
-  CHECK(layoutAPI->getLayout() == 0);
-  layoutAPI->setLayout(1);
-  CHECK(layoutAPI->getLayout() == 1);
-  layoutAPI->setLayout(0);
-  CHECK(layoutAPI->getLayout() == 0);
-  CHECK(layoutAPI->getDefaultLayout() == 0);
-  CHECK(layoutAPI->initialized());
-  layoutAPI->destroy();
-  CHECK(!layoutAPI->initialized());
+  CHECK(layoutAPI.getLayout() == 0);
+  layoutAPI.setLayout(1);
+  CHECK(layoutAPI.getLayout() == 1);
+  layoutAPI.setLayout(0);
+  CHECK(layoutAPI.getLayout() == 0);
+  CHECK(layoutAPI.getDefaultLayout() == 0);
+  CHECK(layoutAPI.initialized());
+  layoutAPI.destroy();
+  CHECK(!layoutAPI.initialized());
 }
 
 TEST_CASE("Layout Plugin: pass producerConfig") {
@@ -31,8 +30,7 @@ TEST_CASE("Layout Plugin: pass producerConfig") {
   auto layoutAPI =
       LayoutAPI::loadPlugin(std::filesystem::path(SAKLS_UNITTESTS_BINARY_DIR),
                             "SAKLS_MockLayoutPlugin", &defaultLayout);
-  REQUIRE(layoutAPI != nullptr);
-  CHECK(layoutAPI->getDefaultLayout() == 1);
+  CHECK(layoutAPI.getDefaultLayout() == 1);
 }
 
 } // namespace
