@@ -35,7 +35,10 @@ add_subdirectory(capi)
 # ------------------------------------------------------------------------------
 # SAKLS shared library
 # ------------------------------------------------------------------------------
-add_subdirectory(lib)
+option(SAKLS_BUILD_LIB "Build SAKLS shared library" ON)
+if(SAKLS_BUILD_LIB)
+  add_subdirectory(lib)
+endif()
 
 # ------------------------------------------------------------------------------
 # SAKLS unit-tests
