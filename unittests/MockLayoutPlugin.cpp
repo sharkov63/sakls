@@ -2,7 +2,7 @@
 /// \file MockLayoutPlugin.cpp
 /// This file contains a mock layout plugin library implementation.
 ///
-#include "sakls/LayoutPlugin.h"
+#include "sakls/CAPI/LayoutPlugin.h"
 
 #include "MockLayoutAPI.hpp"
 

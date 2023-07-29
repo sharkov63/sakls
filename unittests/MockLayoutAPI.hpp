@@ -1,7 +1,7 @@
 #ifndef SAKLS_UNITTESTS_MOCK_LAYOUT_API_HPP
 #define SAKLS_UNITTESTS_MOCK_LAYOUT_API_HPP
 
-#include "sakls/LayoutAPI.h"
+#include "sakls/CAPI/LayoutAPI.h"
 #include "sakls/LayoutAPI.hpp"
 
 #include <string>

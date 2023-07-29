@@ -5,7 +5,7 @@
 #ifndef SAKLS_LAYOUT_API_H
 #define SAKLS_LAYOUT_API_H
 
-#include "sakls/ExternC.h"
+#include "sakls/CAPI/ExternC.h"
 
 SAKLS_EXTERN_C_BEGIN
 

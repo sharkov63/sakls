@@ -5,7 +5,7 @@
 #ifndef SAKLS_SYNTAX_H
 #define SAKLS_SYNTAX_H
 
-#include "sakls/ExternC.h"
+#include "sakls/CAPI/ExternC.h"
 
 #include <stddef.h>
 

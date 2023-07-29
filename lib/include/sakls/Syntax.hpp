@@ -5,7 +5,7 @@
 #ifndef SAKLS_SYNTAX_HPP
 #define SAKLS_SYNTAX_HPP
 
-#include "sakls/Syntax.h"
+#include "sakls/CAPI/Syntax.h"
 
 #include <initializer_list>
 #include <iterator>

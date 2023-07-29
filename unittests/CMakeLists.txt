@@ -9,7 +9,7 @@ configure_file(BinaryDir.h.in ${CMAKE_CURRENT_BINARY_DIR}/BinaryDir.h)
 # ------------------------------------------------------------------------------
 add_library(SAKLS_MockLayoutPlugin MODULE MockLayoutPlugin.cpp
                                           MockLayoutAPI.cpp)
-target_link_libraries(SAKLS_MockLayoutPlugin PRIVATE SAKLS_API)
+target_link_libraries(SAKLS_MockLayoutPlugin PRIVATE SAKLS SAKLS_CAPI)
 
 # ------------------------------------------------------------------------------
 # SAKLS unit-tests executable

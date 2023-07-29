@@ -1,5 +1,5 @@
 #include "sakls/LayoutAPI.hpp"
-#include "sakls/LayoutPlugin.h"
+#include "sakls/CAPI/LayoutPlugin.h"
 
 #include "dylib.hpp"
 

@@ -6,8 +6,8 @@
 #ifndef SAKLS_LAYOUT_PLUGIN_H
 #define SAKLS_LAYOUT_PLUGIN_H
 
-#include "sakls/ExternC.h"
-#include "sakls/LayoutAPI.h"
+#include "sakls/CAPI/ExternC.h"
+#include "sakls/CAPI/LayoutAPI.h"
 
 SAKLS_EXTERN_C_BEGIN
 
