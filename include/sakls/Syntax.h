@@ -1,18 +1,19 @@
 ///
-/// \file SyntaxAPI.h
-/// This file defines the C SAKLS Syntax API:
-/// interface which provides syntax information of the currently edited file.
+/// \file Syntax.h
+/// Syntax API: contains C definition of syntax stack.
 ///
-#ifndef SAKLS_SYNTAX_API_H
-#define SAKLS_SYNTAX_API_H
+#ifndef SAKLS_SYNTAX_H
+#define SAKLS_SYNTAX_H
 
 #include "sakls/ExternC.h"
 
+#include <stddef.h>
+
 SAKLS_EXTERN_C_BEGIN
 
-/// Identifies Syntax API version.
+/// Identifies syntax API version.
 ///
-/// Upon making any ABI compatibility breaking changes in Syntax API,
+/// Upon making any ABI compatibility breaking changes in syntax API,
 /// this number has to be incremented.
 ///
 /// TODO: upon release start this with 1
@@ -52,34 +53,11 @@ struct sakls_SyntaxStackRef {
   /// Address of the first element in the array representation of this syntax
   /// stack, which corresponds to the bottom of the stack. If \p size is zero,
   /// this is allowed to be null.
-  struct sakls_SyntaxNode *addr;
+  struct sakls_SyntaxNode *data;
 
   /// Size of this syntax stack. Can be zero, which means that the stack is
   /// empty and its top is the fictional syntax node.
-  unsigned long size;
-};
-
-/// Syntax API: C interface which provides syntax information of the currently
-/// edited file to the SAKLS engine.
-struct sakls_SyntaxAPI {
-  /// An opaque pointer to the implementation of Syntax API,
-  /// which is passed to every method.
-  ///
-  /// If it is null, then the Syntax API is invalid. For example, an error
-  /// happened while producing the implementation.
-  void *impl;
-
-  /// Get the syntax stack for the current cursor position.
-  ///
-  /// \param impl Pointer to the implementation of Syntax API.
-  /// \param[out] syntaxStack
-  /// \return zero on success; non-zero value on error.
-  int (*getSyntaxStack)(void *impl, struct sakls_SyntaxStackRef *syntaxStack);
-
-  /// Destroy the implementation of Syntax API, free all the resources it owns.
-  ///
-  /// \param impl Pointer to the implementation of Syntax API.
-  void (*destroy)(void *impl);
+  size_t size;
 };
 
 SAKLS_EXTERN_C_END

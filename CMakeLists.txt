@@ -37,7 +37,7 @@ target_include_directories(SAKLSInterface INTERFACE ${SAKLS_INCLUDE_DIRS})
 # ------------------------------------------------------------------------------
 # SAKLS shared library
 # ------------------------------------------------------------------------------
-add_library(SAKLS SHARED src/Engine.cpp src/LayoutAPI.cpp src/SyntaxAPI.cpp)
+add_library(SAKLS SHARED src/Engine.cpp src/LayoutAPI.cpp)
 target_include_directories(SAKLS PUBLIC ${SAKLS_INCLUDE_DIRS})
 target_link_libraries(SAKLS PUBLIC cereal)
 target_link_libraries(SAKLS PRIVATE dylib)

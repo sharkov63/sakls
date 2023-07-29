@@ -8,16 +8,13 @@ using namespace sakls;
 /// Engine
 ///===---------------------------------------------------------------------===//
 
-Engine::Engine(LayoutAPIRef layoutAPI, SyntaxAPIRef syntaxAPI, Schema schema)
-    : layoutAPI(layoutAPI), syntaxAPI(syntaxAPI), schema(std::move(schema)) {}
+Engine::Engine(LayoutAPIRef layoutAPI, Schema schema)
+    : layoutAPI(layoutAPI), schema(std::move(schema)) {}
 
-SyntaxNode Engine::getRelevantTop() const {
-  SyntaxStackRef syntaxStack = syntaxAPI.getSyntaxStack();
-  for (long index = (long)syntaxStack.size - 1; index >= 0; --index) {
-    SyntaxNode node = syntaxStack.addr[index];
-    if (!schema.ignored.count(node.getType()))
-      return node;
-  }
+SyntaxNode Engine::getRelevantTop(SyntaxStackRef synStack) const {
+  for (auto rIt = synStack.rbegin(); rIt != synStack.rend(); ++rIt)
+    if (!schema.ignored.count(rIt->getType()))
+      return *rIt;
   return SyntaxNode();
 }
 
@@ -51,6 +48,6 @@ void Engine::updateNewSyntaxNode(SyntaxNode newNode, bool force) {
   layoutAPI.setLayout(layoutAPI.getDefaultLayout());
 }
 
-void Engine::updateNewSyntaxStack(bool force) {
-  updateNewSyntaxNode(getRelevantTop(), force);
+void Engine::updateNewSyntaxStack(SyntaxStackRef synStack, bool force) {
+  updateNewSyntaxNode(getRelevantTop(synStack), force);
 }
