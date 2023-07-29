@@ -5,7 +5,7 @@
 #ifndef SAKLS_LAYOUT_API_HPP
 #define SAKLS_LAYOUT_API_HPP
 
-#include "sakls/LayoutAPI.h"
+#include "sakls/CAPI/LayoutAPI.h"
 
 #include <filesystem>
 #include <memory>
