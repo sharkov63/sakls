@@ -8,7 +8,7 @@ set(SAKLS_VERSION_MINOR 1)
 set(SAKLS_VERSION_PATCH 0)
 set(SAKLS_VERSION
     ${SAKLS_VERSION_MAJOR}.${SAKLS_VERSION_MINOR}.${SAKLS_VERSION_PATCH})
-message(STATUS "Build SAKLS ${SAKLS_VERSION}")
+message(STATUS "Configuring SAKLS ${SAKLS_VERSION}")
 
 project(
   SAKLS
@@ -29,10 +29,10 @@ add_subdirectory(third-party/doctest)
 add_subdirectory(third-party/dylib)
 
 # ------------------------------------------------------------------------------
-# SAKLSInterface interface library
+# SAKLS_API C interface library
 # ------------------------------------------------------------------------------
-add_library(SAKLSInterface INTERFACE)
-target_include_directories(SAKLSInterface INTERFACE ${SAKLS_INCLUDE_DIRS})
+add_library(SAKLS_API INTERFACE)
+target_include_directories(SAKLS_API INTERFACE ${SAKLS_INCLUDE_DIRS})
 
 # ------------------------------------------------------------------------------
 # SAKLS shared library
@@ -43,7 +43,7 @@ target_link_libraries(SAKLS PUBLIC cereal)
 target_link_libraries(SAKLS PRIVATE dylib)
 
 # ------------------------------------------------------------------------------
-# Unit-tests executable
+# SAKLS unit-tests
 # ------------------------------------------------------------------------------
 option(SAKLS_BUILD_TESTS "Build tests" OFF)
 if(SAKLS_BUILD_TESTS)
