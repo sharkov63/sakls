@@ -1,9 +1,10 @@
 ///
 /// \file LayoutAPI.hpp
+/// \deprecated use LayoutBackend
 /// This file contains definitions of C++ SAKLS Layout API.
 ///
-#ifndef SAKLS_LAYOUT_API_HPP
-#define SAKLS_LAYOUT_API_HPP
+#ifndef SAKLS_LIB_LAYOUT_API_HPP
+#define SAKLS_LIB_LAYOUT_API_HPP
 
 #include "sakls/CAPI/LayoutAPI.h"
 

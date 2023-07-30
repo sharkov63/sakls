@@ -2,8 +2,8 @@
 /// \file Syntax.h
 /// Syntax API: contains C definition of syntax stack.
 ///
-#ifndef SAKLS_SYNTAX_H
-#define SAKLS_SYNTAX_H
+#ifndef SAKLS_CAPI_SYNTAX_H
+#define SAKLS_CAPI_SYNTAX_H
 
 #include "sakls/CAPI/ExternC.h"
 

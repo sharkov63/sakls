@@ -7,16 +7,19 @@ using namespace sakls::unittests;
 /// EngineTest
 ///===---------------------------------------------------------------------===//
 
-EngineTest::EngineTest() : engine(mockLayoutAPI.getAPI(), Schema()) {}
+EngineTest::EngineTest()
+    : engine(std::make_unique<Engine>(mockLayoutBackend, Schema())) {}
 
 void EngineTest::withSchema(Schema schema) {
-  engine = Engine(mockLayoutAPI.getAPI(), std::move(schema));
+  engine = std::make_unique<Engine>(mockLayoutBackend, std::move(schema));
 }
 
-LayoutID EngineTest::getLayout() const { return mockLayoutAPI.getLayout(); }
+LayoutID EngineTest::getLayout() const { return mockLayoutBackend.getLayout(); }
 
-void EngineTest::setLayout(LayoutID layout) { mockLayoutAPI.setLayout(layout); }
+void EngineTest::setLayout(LayoutID layout) {
+  mockLayoutBackend.setLayout(layout);
+}
 
 void EngineTest::updateNewSyntaxStack(SyntaxStackRef synStack, bool force) {
-  engine.updateNewSyntaxStack(synStack, force);
+  engine->updateNewSyntaxStack(synStack, force);
 }

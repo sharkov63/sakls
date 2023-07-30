@@ -3,8 +3,8 @@
 /// This file defines SAKLS Schema: a language which configures SAKLS engine
 /// algorithm.
 ///
-#ifndef SAKLS_SCHEMA_HPP
-#define SAKLS_SCHEMA_HPP
+#ifndef SAKLS_LIB_SCHEMA_HPP
+#define SAKLS_LIB_SCHEMA_HPP
 
 #include <string>
 #include <unordered_map>

@@ -3,8 +3,8 @@
 /// This file provides means of producing Layout API implementations
 /// from external shared plugins, loaded in run-time, called "Layout Plugins".
 ///
-#ifndef SAKLS_LAYOUT_PLUGIN_H
-#define SAKLS_LAYOUT_PLUGIN_H
+#ifndef SAKLS_CAPI_LAYOUT_PLUGIN_H
+#define SAKLS_CAPI_LAYOUT_PLUGIN_H
 
 #include "sakls/CAPI/ExternC.h"
 #include "sakls/CAPI/LayoutAPI.h"

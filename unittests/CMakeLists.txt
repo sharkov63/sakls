@@ -21,8 +21,14 @@ target_link_libraries(SAKLS_MockLayoutPlugin PRIVATE SAKLS SAKLS_CAPI)
 # SAKLS unit-tests executable
 # ------------------------------------------------------------------------------
 add_executable(
-  SAKLS_Unittests EngineTest.cpp EngineTests.cpp LayoutPluginTest.cpp Main.cpp
-                  MockLayoutAPI.cpp SchemaSerialization.cpp)
+  SAKLS_Unittests
+  EngineTest.cpp
+  EngineTests.cpp
+  LayoutPluginTest.cpp
+  Main.cpp
+  MockLayoutAPI.cpp
+  MockLayoutBackend.cpp
+  SchemaSerialization.cpp)
 target_link_libraries(SAKLS_Unittests PRIVATE SAKLS doctest)
 target_include_directories(SAKLS_Unittests
                            PRIVATE ${SAKLS_UNITTESTS_BINARY_DIR})

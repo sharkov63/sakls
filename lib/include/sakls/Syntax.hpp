@@ -2,8 +2,8 @@
 /// \file Syntax.hpp
 /// Useful C++ wrappers of C syntax stack definition.
 ///
-#ifndef SAKLS_SYNTAX_HPP
-#define SAKLS_SYNTAX_HPP
+#ifndef SAKLS_LIB_SYNTAX_HPP
+#define SAKLS_LIB_SYNTAX_HPP
 
 #include "sakls/CAPI/Syntax.h"
 
