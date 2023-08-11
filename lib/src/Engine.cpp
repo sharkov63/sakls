@@ -8,8 +8,8 @@ using namespace sakls;
 /// Engine
 ///===---------------------------------------------------------------------===//
 
-Engine::Engine(LayoutAPIRef layoutAPI, Schema schema)
-    : layoutAPI(layoutAPI), schema(std::move(schema)) {}
+Engine::Engine(ILayoutBackend &layoutBackend, Schema schema)
+    : layoutBackend(layoutBackend), schema(std::move(schema)) {}
 
 SyntaxNode Engine::getRelevantTop(SyntaxStackRef synStack) const {
   for (auto rIt = synStack.rbegin(); rIt != synStack.rend(); ++rIt)
@@ -24,7 +24,7 @@ void Engine::saveCurrentMemorized() {
   auto it = schema.memorized.find(current->getType());
   if (it == schema.memorized.end())
     return;
-  it->second = layoutAPI.getLayout();
+  it->second = layoutBackend.getLayout();
 }
 
 void Engine::updateNewSyntaxNode(SyntaxNode newNode, bool force) {
@@ -36,16 +36,16 @@ void Engine::updateNewSyntaxNode(SyntaxNode newNode, bool force) {
   const char *newType = newNode.getType();
   if (auto forcedIt = schema.forced.find(newType);
       forcedIt != schema.forced.end()) {
-    layoutAPI.setLayout(forcedIt->second);
+    layoutBackend.setLayout(forcedIt->second);
     return;
   }
   if (auto memorizedIt = schema.memorized.find(newType);
       memorizedIt != schema.memorized.end()) {
-    layoutAPI.setLayout(memorizedIt->second);
+    layoutBackend.setLayout(memorizedIt->second);
     return;
   }
-  schema.memorized.emplace(newType, layoutAPI.getDefaultLayout());
-  layoutAPI.setLayout(layoutAPI.getDefaultLayout());
+  schema.memorized.emplace(newType, layoutBackend.getDefaultLayout());
+  layoutBackend.setLayout(layoutBackend.getDefaultLayout());
 }
 
 void Engine::updateNewSyntaxStack(SyntaxStackRef synStack, bool force) {

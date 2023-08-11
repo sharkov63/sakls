@@ -1,9 +1,10 @@
 ///
 /// \file LayoutAPI.h
 /// This file defines the C SAKLS Layout API.
+/// \deprecated use LayoutBackend
 ///
-#ifndef SAKLS_LAYOUT_API_H
-#define SAKLS_LAYOUT_API_H
+#ifndef SAKLS_CAPI_LAYOUT_API_H
+#define SAKLS_CAPI_LAYOUT_API_H
 
 #include "sakls/CAPI/ExternC.h"
 

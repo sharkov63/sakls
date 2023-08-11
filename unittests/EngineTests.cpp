@@ -3,7 +3,6 @@
 /// This file contains unit-tests for SAKLS engine.
 ///
 #include "EngineTest.hpp"
-#include "MockLayoutAPI.hpp"
 #include "doctest/doctest.h"
 #include "sakls/Engine.hpp"
 
