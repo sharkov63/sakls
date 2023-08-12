@@ -3,8 +3,7 @@ set(SAKLS_UNITTESTS_BINARY_DIR ${CMAKE_CURRENT_BINARY_DIR})
 # ------------------------------------------------------------------------------
 # doctest dependency
 # ------------------------------------------------------------------------------
-add_subdirectory(${SAKLS_THIRD_PARTY_DIR}/doctest
-                 ${SAKLS_UNITTESTS_BINARY_DIR}/third-party/doctest)
+add_subdirectory(third-party/doctest)
 
 # ------------------------------------------------------------------------------
 # SAKLS unit-tests executable

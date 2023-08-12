@@ -1,9 +1,9 @@
-[submodule "third-party/cereal"]
-	path = third-party/cereal
-	url = https://github.com/USCiLab/cereal.git
-[submodule "third-party/doctest"]
-	path = third-party/doctest
-	url = https://github.com/doctest/doctest.git
 [submodule "layout_backends/xkb-switch/third-party/xkb-switch"]
 	path = layout_backends/xkb-switch/third-party/xkb-switch
 	url = https://github.com/grwlf/xkb-switch.git
+[submodule "unittests/third-party/doctest"]
+	path = unittests/third-party/doctest
+	url = https://github.com/doctest/doctest.git
+[submodule "lib/third-party/cereal"]
+	path = lib/third-party/cereal
+	url = https://github.com/USCiLab/cereal.git

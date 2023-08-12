@@ -19,7 +19,6 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 set(SAKLS_PROJECT_DIR ${PROJECT_SOURCE_DIR})
-set(SAKLS_THIRD_PARTY_DIR ${SAKLS_PROJECT_DIR}/third-party)
 
 # ------------------------------------------------------------------------------
 # SAKLS C API
