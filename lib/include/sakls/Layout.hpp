@@ -6,12 +6,14 @@
 #ifndef SAKLS_LIB_LAYOUT_HPP
 #define SAKLS_LIB_LAYOUT_HPP
 
+#include <memory>
 #include <stdexcept>
 #include <vector>
 
 namespace sakls {
 
-/// Identifier of a keyboard layout within a layout backend.
+/// \brief Identifier of a keyboard layout within a layout backend.
+///
 /// Layout IDs are assigned starting from 0.
 using LayoutID = unsigned;
 
@@ -28,8 +30,8 @@ struct LayoutDescription {
   std::string type;
 };
 
-/// Interface of a "layout backend": an object, which provides functions of
-/// getting & setting current keyboard layout.
+/// \brief Layout backend: an object, which provides means
+/// of getting & setting current keyboard layout.
 ///
 /// This interface is agnostic of the underlying implementation
 /// (called "layout backend"), which actually handles layout switching.
