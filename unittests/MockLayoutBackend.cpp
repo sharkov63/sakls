@@ -9,7 +9,8 @@ using namespace sakls::unittests;
 /// MockLayoutBackend
 ///===---------------------------------------------------------------------===//
 
-MockLayoutBackend::MockLayoutBackend(std::vector<LayoutDescription> layouts)
+MockLayoutBackend::MockLayoutBackend(
+    std::vector<LayoutDescription> layouts) noexcept
     : layouts(layouts), currentLayout(0) {}
 
 static std::vector<LayoutDescription> numToLayouts(size_t layoutNum) {
@@ -21,17 +22,19 @@ static std::vector<LayoutDescription> numToLayouts(size_t layoutNum) {
   return std::vector(view.begin(), view.end());
 }
 
-MockLayoutBackend::MockLayoutBackend(size_t layoutNum)
+MockLayoutBackend::MockLayoutBackend(size_t layoutNum) noexcept
     : MockLayoutBackend(numToLayouts(layoutNum)) {}
 
 MockLayoutBackend::~MockLayoutBackend() = default;
 
-LayoutID MockLayoutBackend::getDefaultLayout() const { return 0; }
+LayoutID MockLayoutBackend::getDefaultLayout() const noexcept { return 0; }
 
-LayoutID MockLayoutBackend::getLayout() const { return currentLayout; }
+LayoutID MockLayoutBackend::getLayout() const noexcept { return currentLayout; }
 
-void MockLayoutBackend::setLayout(LayoutID layout) { currentLayout = layout; }
+void MockLayoutBackend::setLayout(LayoutID layout) noexcept {
+  currentLayout = layout;
+}
 
-std::vector<LayoutDescription> MockLayoutBackend::allLayouts() {
+std::vector<LayoutDescription> MockLayoutBackend::allLayouts() noexcept {
   return layouts;
 }

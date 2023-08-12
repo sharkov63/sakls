@@ -18,7 +18,7 @@ using LayoutID = unsigned;
 /// An error which happened in layout backend (or while it's been constructed).
 class LayoutBackendError : public std::runtime_error {
 public:
-  LayoutBackendError(const char *what) : std::runtime_error(what) {}
+  using std::runtime_error::runtime_error;
 };
 
 /// Describes a keyboard layout within a layout backend.
@@ -54,12 +54,16 @@ public:
 
   /// Get default keyboard layout.
   /// Usually it is 0.
-  virtual LayoutID getDefaultLayout() const = 0;
+  virtual LayoutID getDefaultLayout() const noexcept = 0;
 
   /// Get current keyboard layout.
+  ///
+  /// \throws LayoutBackendError
   virtual LayoutID getLayout() const = 0;
 
   /// Set current keyboard layout.
+  ///
+  /// \throws LayoutBackendError
   virtual void setLayout(LayoutID layout) = 0;
 
   /// Obtain the list of all available layouts in this layout backend.
@@ -67,6 +71,8 @@ public:
   ///
   /// This list is assumed not to change during the whole lifetime of this
   /// layout backend.
+  ///
+  /// \throws LayoutBackendError
   virtual std::vector<LayoutDescription> allLayouts() = 0;
 };
 

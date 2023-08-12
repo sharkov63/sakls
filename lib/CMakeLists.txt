@@ -3,15 +3,16 @@
 # ------------------------------------------------------------------------------
 add_subdirectory(${SAKLS_THIRD_PARTY_DIR}/cereal
                  ${CMAKE_CURRENT_BINARY_DIR}/third-party/cereal)
-add_subdirectory(${SAKLS_THIRD_PARTY_DIR}/dylib
-                 ${CMAKE_CURRENT_BINARY_DIR}/third-party/dylib)
 
 # ------------------------------------------------------------------------------
 # SAKLS shared library
 # ------------------------------------------------------------------------------
-set(SAKLS_LIB_DIR ${CMAKE_CURRENT_SOURCE_DIR})
-set(SAKLS_LIB_INCLUDE_DIR ${SAKLS_LIB_DIR}/include)
-add_library(SAKLS SHARED src/Engine.cpp src/LayoutAPI.cpp)
+set(SAKLS_LIB_DIR
+    ${CMAKE_CURRENT_SOURCE_DIR}
+    CACHE PATH "Top directory of SAKLS shared library" FORCE)
+set(SAKLS_LIB_INCLUDE_DIR
+    ${SAKLS_LIB_DIR}/include
+    CACHE PATH "Include directory of SAKLS shared library" FORCE)
+add_library(SAKLS SHARED src/Engine.cpp)
 target_include_directories(SAKLS PUBLIC ${SAKLS_LIB_INCLUDE_DIR})
 target_link_libraries(SAKLS PUBLIC SAKLS_CAPI cereal)
-target_link_libraries(SAKLS PRIVATE dylib)

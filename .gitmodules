@@ -4,6 +4,6 @@
 [submodule "third-party/doctest"]
 	path = third-party/doctest
 	url = https://github.com/doctest/doctest.git
-[submodule "third-party/dylib"]
-	path = third-party/dylib
-	url = https://github.com/martin-olivier/dylib.git
+[submodule "layout_backends/xkb-switch/third-party/xkb-switch"]
+	path = layout_backends/xkb-switch/third-party/xkb-switch
+	url = https://github.com/grwlf/xkb-switch.git
