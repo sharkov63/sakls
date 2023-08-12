@@ -19,6 +19,7 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 set(SAKLS_PROJECT_DIR ${PROJECT_SOURCE_DIR})
+set(SAKLS_BINARY_DIR ${PROJECT_BINARY_DIR})
 
 # ------------------------------------------------------------------------------
 # SAKLS C API
@@ -39,6 +40,11 @@ endif()
 if(SAKLS_BUILD_LIB)
   add_subdirectory(layout_backends)
 endif()
+
+# ------------------------------------------------------------------------------
+# SAKLS documentation
+# ------------------------------------------------------------------------------
+add_subdirectory(docs)
 
 # ------------------------------------------------------------------------------
 # SAKLS unit-tests
