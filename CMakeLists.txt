@@ -22,7 +22,7 @@ set(SAKLS_PROJECT_DIR ${PROJECT_SOURCE_DIR})
 set(SAKLS_THIRD_PARTY_DIR ${SAKLS_PROJECT_DIR}/third-party)
 
 # ------------------------------------------------------------------------------
-# SAKLS_CAPI C interface library
+# SAKLS C API
 # ------------------------------------------------------------------------------
 add_subdirectory(capi)
 
@@ -32,6 +32,13 @@ add_subdirectory(capi)
 option(SAKLS_BUILD_LIB "Build SAKLS shared library" ON)
 if(SAKLS_BUILD_LIB)
   add_subdirectory(lib)
+endif()
+
+# ------------------------------------------------------------------------------
+# SAKLS layout backends
+# ------------------------------------------------------------------------------
+if(SAKLS_BUILD_LIB)
+  add_subdirectory(layout_backends)
 endif()
 
 # ------------------------------------------------------------------------------

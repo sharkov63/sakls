@@ -18,20 +18,20 @@ class MockLayoutBackend : public ILayoutBackend {
 
 public:
   /// Create with provided layout names.
-  explicit MockLayoutBackend(std::vector<LayoutDescription> layouts);
+  explicit MockLayoutBackend(std::vector<LayoutDescription> layouts) noexcept;
 
   /// Create with \p layoutNum layouts named "layout0", "layout1" and so on.
-  explicit MockLayoutBackend(size_t layoutNum = 2);
+  explicit MockLayoutBackend(size_t layoutNum = 2) noexcept;
 
   virtual ~MockLayoutBackend() override;
 
-  virtual LayoutID getDefaultLayout() const override;
+  virtual LayoutID getDefaultLayout() const noexcept override;
 
-  virtual LayoutID getLayout() const override;
+  virtual LayoutID getLayout() const noexcept override;
 
-  virtual void setLayout(LayoutID layout) override;
+  virtual void setLayout(LayoutID layout) noexcept override;
 
-  virtual std::vector<LayoutDescription> allLayouts() override;
+  virtual std::vector<LayoutDescription> allLayouts() noexcept override;
 };
 
 } // namespace sakls::unittests
