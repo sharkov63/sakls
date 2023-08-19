@@ -20,11 +20,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 set(SAKLS_PROJECT_DIR ${PROJECT_SOURCE_DIR})
 set(SAKLS_BINARY_DIR ${PROJECT_BINARY_DIR})
-
-# ------------------------------------------------------------------------------
-# SAKLS C API
-# ------------------------------------------------------------------------------
-add_subdirectory(capi)
+set(SAKLS_INCLUDE_DIR ${SAKLS_PROJECT_DIR}/include)
 
 # ------------------------------------------------------------------------------
 # SAKLS shared library
@@ -32,13 +28,6 @@ add_subdirectory(capi)
 option(SAKLS_BUILD_LIB "Build SAKLS shared library" ON)
 if(SAKLS_BUILD_LIB)
   add_subdirectory(lib)
-endif()
-
-# ------------------------------------------------------------------------------
-# SAKLS layout backends
-# ------------------------------------------------------------------------------
-if(SAKLS_BUILD_LIB)
-  add_subdirectory(layout_backends)
 endif()
 
 # ------------------------------------------------------------------------------

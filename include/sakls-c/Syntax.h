@@ -11,7 +11,7 @@
 
 SAKLS_EXTERN_C_BEGIN
 
-/// Identifies syntax API version.
+/// \brief Identifies syntax API version.
 ///
 /// Upon making any ABI compatibility breaking changes in syntax API,
 /// this number has to be incremented.
@@ -29,7 +29,7 @@ struct sakls_SyntaxNode {
   const char *type;
 };
 
-/// A non-owning reference to a syntax stack.
+/// \brief A non-owning reference to a syntax stack.
 ///
 /// Let's say in the external editor we are editing a file \p f, and the syntax
 /// tree \p T of file \p f is maintained (either by the editor, or by some
