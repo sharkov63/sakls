@@ -8,12 +8,30 @@ using namespace sakls;
 // Engine
 //===---------------------------------------------------------------------===//
 
-Engine::Engine(ILayoutBackend &layoutBackend, Schema schema) noexcept
-    : layoutBackend(layoutBackend), schema(std::move(schema)) {}
+Engine::Engine(ILayoutBackend &layoutBackend, const Schema &schema,
+               SchemaTranslator translator) noexcept
+    : layoutBackend(layoutBackend), translator(std::move(translator)) {
+  configure(schema);
+}
+
+void Engine::configure(const Schema &schema) {
+  for (const auto &[stringType, layout] : schema.memorized) {
+    SyntaxNodeType type = translator.getSyntaxNodeType(stringType);
+    memorized[type] = layout;
+  }
+  for (const auto &[stringType, layout] : schema.forced) {
+    SyntaxNodeType type = translator.getSyntaxNodeType(stringType);
+    forced[type] = layout;
+  }
+  for (const std::string &stringType : schema.ignored) {
+    SyntaxNodeType type = translator.getSyntaxNodeType(stringType);
+    ignored.insert(type);
+  }
+}
 
 SyntaxNode Engine::getRelevantTop(SyntaxStackRef synStack) const {
   for (auto rIt = synStack.rbegin(); rIt != synStack.rend(); ++rIt)
-    if (!schema.ignored.count(rIt->getType()))
+    if (!ignored.count(rIt->type))
       return *rIt;
   return SyntaxNode();
 }
@@ -21,30 +39,28 @@ SyntaxNode Engine::getRelevantTop(SyntaxStackRef synStack) const {
 void Engine::saveCurrentMemorized() {
   if (!current)
     return;
-  auto it = schema.memorized.find(current->getType());
-  if (it == schema.memorized.end())
+  auto it = memorized.find(current->type);
+  if (it == memorized.end())
     return;
   it->second = layoutBackend.getLayout();
 }
 
 void Engine::updateNewSyntaxNode(SyntaxNode newNode, bool force) {
-  if (current && !force &&
-      std::strcmp(newNode.getType(), current->getType()) == 0)
+  if (current && !force && newNode.type == current->type)
     return;
   saveCurrentMemorized();
   current = newNode;
-  const char *newType = newNode.getType();
-  if (auto forcedIt = schema.forced.find(newType);
-      forcedIt != schema.forced.end()) {
+  SyntaxNodeType newType = newNode.type;
+  if (auto forcedIt = forced.find(newType); forcedIt != forced.end()) {
     layoutBackend.setLayout(forcedIt->second);
     return;
   }
-  if (auto memorizedIt = schema.memorized.find(newType);
-      memorizedIt != schema.memorized.end()) {
+  if (auto memorizedIt = memorized.find(newType);
+      memorizedIt != memorized.end()) {
     layoutBackend.setLayout(memorizedIt->second);
     return;
   }
-  schema.memorized.emplace(newType, layoutBackend.getDefaultLayout());
+  memorized.emplace(newType, layoutBackend.getDefaultLayout());
   layoutBackend.setLayout(layoutBackend.getDefaultLayout());
 }
 

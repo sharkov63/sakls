@@ -8,6 +8,7 @@
 #include "sakls-c/ExternC.h"
 
 #include <stddef.h>
+#include <stdint.h>
 
 SAKLS_EXTERN_C_BEGIN
 
@@ -19,14 +20,20 @@ SAKLS_EXTERN_C_BEGIN
 /// TODO: upon release start this with 1
 #define SAKLS_SYNTAX_API_VERSION 0
 
+/// \brief Identifies type of a syntax node.
+///
+/// This identification is used inside SAKLS engine,
+/// while in SAKLS schema syntax node types are strings.
+typedef uint64_t sakls_SyntaxNodeType;
+
 /// The type of the fictional syntax node that lies
 /// just below the bottom of any syntax stack.
-#define SAKLS_FICTIONAL_SYNTAX_NODE_TYPE ""
+#define SAKLS_FICTIONAL_SYNTAX_NODE_TYPE 0UL
 
 /// Syntax node: an entry in a syntax stack.
 struct sakls_SyntaxNode {
-  /// A null-terminated string identifier of the type of this syntax node.
-  const char *type;
+  /// Type of this syntax node.
+  sakls_SyntaxNodeType type;
 };
 
 /// \brief A non-owning reference to a syntax stack.

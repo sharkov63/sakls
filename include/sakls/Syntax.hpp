@@ -13,24 +13,9 @@
 
 namespace sakls {
 
-/// C++ wrapper around sakls_SyntaxNode.
-class SyntaxNode {
-  sakls_SyntaxNode cNode;
+using SyntaxNodeType = sakls_SyntaxNodeType;
 
-public:
-  /// Create the fictional syntax node that lies just below the bottom
-  /// of any syntax stack.
-  SyntaxNode() : cNode{.type = SAKLS_FICTIONAL_SYNTAX_NODE_TYPE} {}
-
-  /// Create node with a type.
-  SyntaxNode(const char *nodeType) : cNode{.type = nodeType} {}
-
-  /// Convert from C sakls_SyntaxNode. The conversion can be implicit.
-  SyntaxNode(sakls_SyntaxNode cNode) : cNode(cNode) {}
-
-  /// A null-terminated string identifier of the type of this syntax node.
-  const char *getType() const { return cNode.type; }
-};
+using SyntaxNode = sakls_SyntaxNode;
 
 /// A non-owning reference to a syntax stack:
 /// a convenience STL-like container wrapper around sakls_SyntaxStackRef.
@@ -41,8 +26,7 @@ public:
   using std::span<const SyntaxNode>::span;
 
   SyntaxStackRef(sakls_SyntaxStackRef cRef)
-      : std::span<const SyntaxNode>(
-            reinterpret_cast<const SyntaxNode *>(cRef.data), cRef.size) {}
+      : std::span<const SyntaxNode>(cRef.data, cRef.size) {}
 
 #if defined(__GNUC__) && (__GNUC__ >= 9)
 #pragma GCC diagnostic push

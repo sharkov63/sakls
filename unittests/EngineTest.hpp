@@ -16,8 +16,8 @@ class EngineTest {
 protected:
   EngineTest();
 
-  /// Initialize SAKLS engine with given schema.
-  void withSchema(Schema schema);
+  /// Initialize SAKLS engine with given schema and translator.
+  void with(Schema schema, SchemaTranslator translator = SchemaTranslator());
 
   /// Get current keyboard layout from mock layout backend.
   LayoutID getLayout() const;
