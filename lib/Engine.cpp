@@ -8,7 +8,7 @@ using namespace sakls;
 // Engine
 //===---------------------------------------------------------------------===//
 
-Engine::Engine(ILayoutBackend &layoutBackend, Schema schema)
+Engine::Engine(ILayoutBackend &layoutBackend, Schema schema) noexcept
     : layoutBackend(layoutBackend), schema(std::move(schema)) {}
 
 SyntaxNode Engine::getRelevantTop(SyntaxStackRef synStack) const {
@@ -48,6 +48,20 @@ void Engine::updateNewSyntaxNode(SyntaxNode newNode, bool force) {
   layoutBackend.setLayout(layoutBackend.getDefaultLayout());
 }
 
-void Engine::updateNewSyntaxStack(SyntaxStackRef synStack, bool force) {
+void Engine::updateNewSyntaxStack(SyntaxStackRef synStack,
+                                  bool force) noexcept {
   updateNewSyntaxNode(getRelevantTop(synStack), force);
+}
+
+//===----------------------------------------------------------------------===//
+// Engine C API
+//===----------------------------------------------------------------------===//
+
+extern "C" void *sakls_Engine_createWithDefaultSchema(void *layoutBackend) {
+  return new Engine(*reinterpret_cast<ILayoutBackend *>(layoutBackend),
+                    Schema());
+}
+
+extern "C" void sakls_Engine_delete(void *engine) {
+  delete reinterpret_cast<Engine *>(engine);
 }

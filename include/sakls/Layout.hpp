@@ -3,8 +3,8 @@
 /// This file defines the C++ SAKLS layout backend interface,
 /// which provides means of keyboard layout manipulation.
 ///
-#ifndef SAKLS_LIB_LAYOUT_HPP
-#define SAKLS_LIB_LAYOUT_HPP
+#ifndef SAKLS_LAYOUT_HPP
+#define SAKLS_LAYOUT_HPP
 
 #include <memory>
 #include <stdexcept>

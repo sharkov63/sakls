@@ -2,8 +2,8 @@
 /// \file Engine.hpp
 /// This file declares the SAKLS Engine.
 ///
-#ifndef SAKLS_LIB_ENGINE_HPP
-#define SAKLS_LIB_ENGINE_HPP
+#ifndef SAKLS_ENGINE_HPP
+#define SAKLS_ENGINE_HPP
 
 #include "sakls/Layout.hpp"
 #include "sakls/Schema.hpp"
@@ -48,7 +48,7 @@ public:
   ///
   /// \param layoutBackend Reference to the layout backend.
   /// \param schema SAKLS schema (passed by value).
-  Engine(ILayoutBackend &layoutBackend, Schema schema);
+  Engine(ILayoutBackend &layoutBackend, Schema schema) noexcept;
 
   /// Update the SAKLS engine: completely replace the currently observed syntax
   /// stack with a new one.
@@ -60,7 +60,8 @@ public:
   /// \param synStack The new syntax stack.
   /// \param force Change the layout even if the type of the current syntax node
   /// hasn't been changed.
-  void updateNewSyntaxStack(SyntaxStackRef synStack, bool force = false);
+  void updateNewSyntaxStack(SyntaxStackRef synStack,
+                            bool force = false) noexcept;
 };
 
 } // namespace sakls

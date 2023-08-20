@@ -1,8 +1,8 @@
 ///
 /// \file SchemaSerialization.hpp
 ///
-#ifndef SAKLS_LIB_SCHEMA_SERIALIZATION_HPP
-#define SAKLS_LIB_SCHEMA_SERIALIZATION_HPP
+#ifndef SAKLS_SCHEMA_SERIALIZATION_HPP
+#define SAKLS_SCHEMA_SERIALIZATION_HPP
 
 #include "cereal/cereal.hpp"
 #include "cereal/details/traits.hpp"
