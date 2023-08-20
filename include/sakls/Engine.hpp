@@ -17,21 +17,25 @@ namespace sakls {
 /// making decisions on switching keyboard layout.
 ///
 /// When the contents or the cursor position of the currently edited file
-/// change, the editor (or a plugin) makes calls to the SAKLS engine
-/// (TODO insert a reference to the API through which the calls are made),
+/// change, the editor (or a plugin) makes calls to the SAKLS engine,
 /// passing the syntax information as parameters. Then, the engine makes the
 /// decision and sets the chosen keyboard layout using the layout backend.
 ///
 /// The algorithm, which tells the engine what keyboard layout to set at the
 /// current moment, knowing syntax information, is described by Schema class.
 ///
-/// Note that Engine does not take ownership of layout backend, but it does that
-/// of the Schema.
+/// Note that Engine does not take ownership of layout backend and schema.
 class Engine {
   ILayoutBackend &layoutBackend;
-  Schema schema;
+  SchemaTranslator translator;
+
+  std::unordered_map<SyntaxNodeType, LayoutID> memorized;
+  std::unordered_map<SyntaxNodeType, LayoutID> forced;
+  std::unordered_set<SyntaxNodeType> ignored;
 
   std::optional<SyntaxNode> current;
+
+  void configure(const Schema &schema);
 
   SyntaxNode getRelevantTop(SyntaxStackRef synStack) const;
 
@@ -47,8 +51,10 @@ public:
   /// call an update method.
   ///
   /// \param layoutBackend Reference to the layout backend.
-  /// \param schema SAKLS schema (passed by value).
-  Engine(ILayoutBackend &layoutBackend, Schema schema) noexcept;
+  /// \param schema High-level SAKLS schema.
+  /// \param translator Schema translator valid for the time being.
+  Engine(ILayoutBackend &layoutBackend, const Schema &schema = Schema(),
+         SchemaTranslator translator = SchemaTranslator()) noexcept;
 
   /// Update the SAKLS engine: completely replace the currently observed syntax
   /// stack with a new one.

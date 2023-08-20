@@ -10,7 +10,7 @@ set(CEREAL_BINARY_DIR
 # ------------------------------------------------------------------------------
 # SAKLS shared library
 # ------------------------------------------------------------------------------
-add_library(SAKLS SHARED Engine.cpp)
+add_library(SAKLS SHARED Engine.cpp Schema.cpp)
 target_include_directories(SAKLS PUBLIC ${SAKLS_INCLUDE_DIR})
 target_link_libraries(SAKLS PUBLIC cereal)
 

@@ -10,8 +10,9 @@ using namespace sakls::unittests;
 EngineTest::EngineTest()
     : engine(std::make_unique<Engine>(mockLayoutBackend, Schema())) {}
 
-void EngineTest::withSchema(Schema schema) {
-  engine = std::make_unique<Engine>(mockLayoutBackend, std::move(schema));
+void EngineTest::with(Schema schema, SchemaTranslator translator) {
+  engine = std::make_unique<Engine>(mockLayoutBackend, schema,
+                                    std::move(translator));
 }
 
 LayoutID EngineTest::getLayout() const { return mockLayoutBackend.getLayout(); }
