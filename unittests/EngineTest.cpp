@@ -20,7 +20,3 @@ LayoutID EngineTest::getLayout() const { return mockLayoutBackend.getLayout(); }
 void EngineTest::setLayout(LayoutID layout) {
   mockLayoutBackend.setLayout(layout);
 }
-
-void EngineTest::updateNewSyntaxStack(SyntaxStackRef synStack, bool force) {
-  engine->updateNewSyntaxStack(synStack, force);
-}

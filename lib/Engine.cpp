@@ -1,6 +1,10 @@
+///
+/// \file Engine.cpp
+/// Implementation of SAKLS Engine and it's C API.
+///
 #include "sakls/Engine.hpp"
 
-#include <cstring>
+#include <cassert>
 
 using namespace sakls;
 
@@ -36,20 +40,24 @@ SyntaxNode Engine::getRelevantTop(SyntaxStackRef synStack) const {
   return SyntaxNode();
 }
 
-void Engine::saveCurrentMemorized() {
-  if (!current)
+void Engine::keepUp() {
+  if (!node)
     return;
-  auto it = memorized.find(current->type);
-  if (it == memorized.end())
-    return;
-  it->second = layoutBackend.getLayout();
+  auto it = memorized.find(node->type);
+  if (it != memorized.end())
+    it->second = layoutBackend.getLayout();
 }
 
-void Engine::updateNewSyntaxNode(SyntaxNode newNode, bool force) {
-  if (current && !force && newNode.type == current->type)
+void Engine::reset() {
+  keepUp();
+  node.reset();
+}
+
+void Engine::setNewSyntaxNode(SyntaxNode newNode, bool force) {
+  if (node && !force && newNode.type == node->type)
     return;
-  saveCurrentMemorized();
-  current = newNode;
+  keepUp();
+  node = newNode;
   SyntaxNodeType newType = newNode.type;
   if (auto forcedIt = forced.find(newType); forcedIt != forced.end()) {
     layoutBackend.setLayout(forcedIt->second);
@@ -60,24 +68,57 @@ void Engine::updateNewSyntaxNode(SyntaxNode newNode, bool force) {
     layoutBackend.setLayout(memorizedIt->second);
     return;
   }
+  assert(!forced.count(newNode.type));
   memorized.emplace(newType, layoutBackend.getDefaultLayout());
   layoutBackend.setLayout(layoutBackend.getDefaultLayout());
 }
 
-void Engine::updateNewSyntaxStack(SyntaxStackRef synStack,
-                                  bool force) noexcept {
-  updateNewSyntaxNode(getRelevantTop(synStack), force);
+void Engine::setNewSyntaxStack(SyntaxStackRef synStack, bool force) {
+  setNewSyntaxNode(getRelevantTop(synStack), force);
 }
 
 //===----------------------------------------------------------------------===//
 // Engine C API
 //===----------------------------------------------------------------------===//
 
+#define ENGINE(opaqueEngine) reinterpret_cast<Engine *>(opaqueEngine)
+
 extern "C" void *sakls_Engine_createWithDefaultSchema(void *layoutBackend) {
   return new Engine(*reinterpret_cast<ILayoutBackend *>(layoutBackend),
                     Schema());
 }
 
-extern "C" void sakls_Engine_delete(void *engine) {
-  delete reinterpret_cast<Engine *>(engine);
+extern "C" int sakls_Engine_reset(void *opaqueEngine) {
+  try {
+    ENGINE(opaqueEngine)->reset();
+    return 0;
+  } catch (...) {
+  }
+  return -1;
 }
+
+extern "C" int sakls_Engine_setNewSyntaxNode(void *opaqueEngine,
+                                             sakls_SyntaxNode newNode,
+                                             int force) {
+  try {
+    ENGINE(opaqueEngine)->setNewSyntaxNode(newNode, force);
+  } catch (...) {
+  }
+  return -1;
+}
+
+extern "C" int sakls_Engine_setNewSyntaxStack(void *opaqueEngine,
+                                              sakls_SyntaxStackRef synStack,
+                                              int force) {
+  try {
+    ENGINE(opaqueEngine)->setNewSyntaxStack(synStack, force);
+  } catch (...) {
+  }
+  return -1;
+}
+
+extern "C" void sakls_Engine_delete(void *opaqueEngine) {
+  delete ENGINE(opaqueEngine);
+}
+
+#undef ENGINE
