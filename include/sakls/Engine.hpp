@@ -30,8 +30,6 @@ namespace sakls {
 ///
 /// The algorithm, which tells the engine what keyboard layout to set at the
 /// current moment, knowing syntax information, is described by Schema class.
-///
-/// Note that Engine does not take ownership of layout backend and schema.
 class Engine {
 public:
   /// @name Engine C++ API
@@ -50,7 +48,7 @@ public:
   /// about the translation, and passes integer syntax node types in calls to
   /// Engine API, the user must guarantee that this translation is valid during
   /// the whole lifetime of the Engine.
-  Engine(ILayoutBackend &layoutBackend, const Schema &schema = Schema(),
+  Engine(ILayoutBackend &layoutBackend, Schema schema = Schema(),
          SchemaTranslator translator = SchemaTranslator()) noexcept;
 
   /// \brief Set the Engine state to inactive.

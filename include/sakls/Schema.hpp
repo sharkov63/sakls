@@ -6,6 +6,8 @@
 #ifndef SAKLS_SCHEMA_HPP
 #define SAKLS_SCHEMA_HPP
 
+#include "sakls-c/Schema.h"
+
 #include <string>
 #include <unordered_map>
 #include <unordered_set>
@@ -32,6 +34,8 @@ struct Schema {
 
   /// Serialization method for cereal library.
   template <typename Archive> void serialize(Archive &archive);
+
+  static Schema fromCSchema(sakls_Schema cSchema);
 };
 
 /// Translates high-level schema into low-level representation for SAKLS engine.
@@ -51,6 +55,8 @@ public:
   [[nodiscard]] SyntaxNodeType getSyntaxNodeType(std::string_view stringType);
 
   void setSyntaxNodeType(std::string stringType, SyntaxNodeType intType);
+
+  static SchemaTranslator fromCTranslator(sakls_SchemaTranslator cTranslator);
 };
 
 } // namespace sakls

@@ -16,7 +16,7 @@ using namespace sakls;
 // Engine
 //===---------------------------------------------------------------------===//
 
-Engine::Engine(ILayoutBackend &layoutBackend, const Schema &schema,
+Engine::Engine(ILayoutBackend &layoutBackend, Schema schema,
                SchemaTranslator translator) noexcept
     : layoutBackend(layoutBackend), translator(std::move(translator)) {
   configure(schema);
@@ -114,6 +114,14 @@ void Engine::setLogging(std::filesystem::path logFile) {
 extern "C" void *sakls_Engine_createWithDefaultSchema(void *layoutBackend) {
   return new Engine(*reinterpret_cast<ILayoutBackend *>(layoutBackend),
                     Schema());
+}
+
+extern "C" void *sakls_Engine_create(void *layoutBackend,
+                                     struct sakls_Schema schema,
+                                     struct sakls_SchemaTranslator translator) {
+  return new Engine(*reinterpret_cast<ILayoutBackend *>(layoutBackend),
+                    Schema::fromCSchema(schema),
+                    SchemaTranslator::fromCTranslator(translator));
 }
 
 extern "C" int sakls_Engine_reset(void *opaqueEngine) {
