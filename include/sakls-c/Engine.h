@@ -8,12 +8,42 @@
 #define SAKLS_C_ENGINE_H
 
 #include "sakls-c/ExternC.h"
+#include "sakls-c/Schema.h"
 #include "sakls-c/Syntax.h"
 
 SAKLS_EXTERN_C_BEGIN
 
-/// \deprecated Temporary, while schema is not supported.
-void *sakls_Engine_createWithDefaultSchema(void *layoutBackend);
+/// \brief Create a SAKLS engine.
+///
+/// Created engine is inactive (see Engine state)
+/// and has default schema and schema translator which are empty.
+///
+/// \param layoutBackend Layout backend for the engine to use.
+/// Ownership of the layout backend is not taken.
+void *sakls_Engine_create(void *layoutBackend);
+
+/// \brief Set Schema translator of this Engine.
+///
+/// \param engine Pointer to the SAKLS engine.
+/// \param translator Schema translator, which translates string syntax node
+/// types (seen in high-level schema) into integer syntax node types
+/// (used in Engine for computations).
+///
+/// In case when the user is also aware about the translation, and passes
+/// integer syntax node types in calls to Engine API, the user must guarantee
+/// that this translation is valid during the whole lifetime of the Engine.
+void sakls_Engine_setSchemaTranslator(void *engine,
+                                      struct sakls_SchemaTranslator translator);
+
+/// \brief Configure Engine algorithm by a SAKLS Schema.
+///
+/// The passed high-level schema contains string syntax node types,
+/// they are converted to integer syntax node types by Schema translator.
+///
+/// \param engine Pointer to the SAKLS engine.
+/// \param schema High-level SAKLS schema. Ownership of the schema
+/// is not taken.
+void sakls_Engine_useSchema(void *engine, void *schema);
 
 /// \brief Set the Engine state to inactive.
 ///
@@ -52,6 +82,10 @@ int sakls_Engine_setNewSyntaxStack(void *engine,
                                    struct sakls_SyntaxStackRef synStack,
                                    int force);
 
+/// Make SAKLS Engine log to a file at #logFilePath.
+///
+/// \param engine Pointer to the SAKLS engine.
+/// \param logFilePath Path to the log file.
 void sakls_Engine_setLogging(void *engine, const char *logFilePath);
 
 /// \brief Destroy a SAKLS engine.

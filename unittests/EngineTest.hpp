@@ -11,19 +11,10 @@ namespace sakls::unittests {
 /// A test fixture class for unit-testing SAKLS engine.
 class EngineTest {
 protected:
-  mutable MockLayoutBackend mockLayoutBackend;
+  mutable MockLayoutBackend layoutBackend;
   std::unique_ptr<Engine> engine;
 
-  EngineTest();
-
-  /// Initialize SAKLS engine with given schema and translator.
-  void with(Schema schema, SchemaTranslator translator = SchemaTranslator());
-
-  /// Get current keyboard layout from mock layout backend.
-  LayoutID getLayout() const;
-
-  /// Set current keyboard layout using mock layout backend.
-  void setLayout(LayoutID layout);
+  EngineTest() : engine(std::make_unique<Engine>(layoutBackend)) {}
 };
 
 } // namespace sakls::unittests

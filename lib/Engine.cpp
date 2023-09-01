@@ -16,10 +16,29 @@ using namespace sakls;
 // Engine
 //===---------------------------------------------------------------------===//
 
-Engine::Engine(ILayoutBackend &layoutBackend, const Schema &schema,
-               SchemaTranslator translator) noexcept
-    : layoutBackend(layoutBackend), translator(std::move(translator)) {
-  configure(schema);
+Engine::Engine(ILayoutBackend &layoutBackend) noexcept
+    : layoutBackend(layoutBackend) {}
+
+void Engine::setSchemaTranslator(SchemaTranslator translator) {
+  this->translator = std::move(translator);
+}
+
+void Engine::useSchema(const Schema &schema) {
+  memorized.clear();
+  for (const auto &[stringType, layout] : schema.memorized) {
+    SyntaxNodeType type = translator.getSyntaxNodeType(stringType);
+    memorized[type] = layout;
+  }
+  forced.clear();
+  for (const auto &[stringType, layout] : schema.forced) {
+    SyntaxNodeType type = translator.getSyntaxNodeType(stringType);
+    forced[type] = layout;
+  }
+  ignored.clear();
+  for (const std::string &stringType : schema.ignored) {
+    SyntaxNodeType type = translator.getSyntaxNodeType(stringType);
+    ignored.insert(type);
+  }
 }
 
 void Engine::keepUp() {
@@ -38,21 +57,6 @@ void Engine::setLayout(LayoutID layout) {
   layoutBackend.setLayout(layout);
   if (logger)
     logger->trace("setLayout {}", layout);
-}
-
-void Engine::configure(const Schema &schema) {
-  for (const auto &[stringType, layout] : schema.memorized) {
-    SyntaxNodeType type = translator.getSyntaxNodeType(stringType);
-    memorized[type] = layout;
-  }
-  for (const auto &[stringType, layout] : schema.forced) {
-    SyntaxNodeType type = translator.getSyntaxNodeType(stringType);
-    forced[type] = layout;
-  }
-  for (const std::string &stringType : schema.ignored) {
-    SyntaxNodeType type = translator.getSyntaxNodeType(stringType);
-    ignored.insert(type);
-  }
 }
 
 SyntaxNode Engine::getRelevantTop(SyntaxStackRef synStack) const {
@@ -111,9 +115,8 @@ void Engine::setLogging(std::filesystem::path logFile) {
 
 #define ENGINE(opaqueEngine) reinterpret_cast<Engine *>(opaqueEngine)
 
-extern "C" void *sakls_Engine_createWithDefaultSchema(void *layoutBackend) {
-  return new Engine(*reinterpret_cast<ILayoutBackend *>(layoutBackend),
-                    Schema());
+extern "C" void *sakls_Engine_create(void *layoutBackend) {
+  return new Engine(*reinterpret_cast<ILayoutBackend *>(layoutBackend));
 }
 
 extern "C" int sakls_Engine_reset(void *opaqueEngine) {
@@ -123,6 +126,17 @@ extern "C" int sakls_Engine_reset(void *opaqueEngine) {
   } catch (...) {
   }
   return -1;
+}
+
+extern "C" void
+sakls_Engine_setSchemaTranslator(void *opaqueEngine,
+                                 struct sakls_SchemaTranslator translator) {
+  ENGINE(opaqueEngine)
+      ->setSchemaTranslator(SchemaTranslator::fromCTranslator(translator));
+}
+
+extern "C" void sakls_Engine_useSchema(void *opaqueEngine, void *opaqueSchema) {
+  ENGINE(opaqueEngine)->useSchema(*reinterpret_cast<Schema *>(opaqueEngine));
 }
 
 extern "C" int sakls_Engine_setNewSyntaxNode(void *opaqueEngine,
