@@ -8,8 +8,8 @@ add_subdirectory(third-party/doctest)
 # ------------------------------------------------------------------------------
 # SAKLS unit-tests executable
 # ------------------------------------------------------------------------------
-add_executable(SAKLS_Unittests EngineTest.cpp EngineTests.cpp Main.cpp
-                               MockLayoutBackend.cpp SchemaSerialization.cpp)
+add_executable(SAKLS_Unittests EngineTests.cpp Main.cpp MockLayoutBackend.cpp
+                               SchemaSerialization.cpp)
 target_link_libraries(SAKLS_Unittests PRIVATE SAKLS doctest)
 target_include_directories(SAKLS_Unittests
                            PRIVATE ${SAKLS_UNITTESTS_BINARY_DIR})

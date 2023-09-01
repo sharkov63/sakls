@@ -11,23 +11,24 @@
 
 SAKLS_EXTERN_C_BEGIN
 
-struct sakls_SchemaEntry {
-  const char *syntaxNodeType;
-  unsigned layoutID;
-};
+typedef unsigned sakls_LayoutID;
+typedef const char *sakls_StringSyntaxNodeType;
 
-struct sakls_Schema {
-  sakls_SchemaEntry *memorized;
-  size_t memorizedSize;
-  sakls_SchemaEntry *forced;
-  size_t forcedSize;
-  const char **ignored;
-  size_t ignoredSize;
-};
+void *sakls_Schema_create();
+
+void sakls_Schema_setMemorized(void *schema, sakls_StringSyntaxNodeType type,
+                               sakls_LayoutID defaultLayout);
+
+void sakls_Schema_setForced(void *schema, sakls_StringSyntaxNodeType type,
+                            sakls_LayoutID layout);
+
+void sakls_Schema_setIgnored(void *schema, sakls_StringSyntaxNodeType type);
+
+void sakls_Schema_delete(void *schema);
 
 struct sakls_SchemaTranslator {
   struct {
-    const char *stringType;
+    sakls_StringSyntaxNodeType stringType;
     uint64_t intType;
   } *map;
   size_t size;

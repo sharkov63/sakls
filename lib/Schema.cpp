@@ -3,25 +3,6 @@
 using namespace sakls;
 
 //===----------------------------------------------------------------------===//
-// Schema
-//===----------------------------------------------------------------------===//
-
-Schema Schema::fromCSchema(sakls_Schema cSchema) {
-  Schema schema;
-  for (size_t i = 0; i < cSchema.memorizedSize; ++i) {
-    sakls_SchemaEntry entry = cSchema.memorized[i];
-    schema.memorized[entry.syntaxNodeType] = entry.layoutID;
-  }
-  for (size_t i = 0; i < cSchema.forcedSize; ++i) {
-    sakls_SchemaEntry entry = cSchema.forced[i];
-    schema.forced[entry.syntaxNodeType] = entry.layoutID;
-  }
-  for (size_t i = 0; i < cSchema.ignoredSize; ++i)
-    schema.ignored.insert(cSchema.ignored[i]);
-  return schema;
-}
-
-//===----------------------------------------------------------------------===//
 // SchemaTranslator
 //===----------------------------------------------------------------------===//
 
@@ -56,3 +37,34 @@ SchemaTranslator::fromCTranslator(sakls_SchemaTranslator cTranslator) {
   }
   return translator;
 }
+
+//===----------------------------------------------------------------------===//
+// Schema C API
+//===----------------------------------------------------------------------===//
+
+#define SCHEMA(opaqueSchema) (reinterpret_cast<Schema *>(opaqueSchema))
+
+extern "C" void *sakls_Schema_create() { return new Schema(); }
+
+extern "C" void sakls_Schema_setMemorized(void *opaqueSchema,
+                                          sakls_StringSyntaxNodeType type,
+                                          sakls_LayoutID defaultLayout) {
+  SCHEMA(opaqueSchema)->memorized[type] = defaultLayout;
+}
+
+extern "C" void sakls_Schema_setForced(void *opaqueSchema,
+                                       sakls_StringSyntaxNodeType type,
+                                       sakls_LayoutID layout) {
+  SCHEMA(opaqueSchema)->forced[type] = layout;
+}
+
+extern "C" void sakls_Schema_setIgnored(void *opaqueSchema,
+                                        sakls_StringSyntaxNodeType type) {
+  SCHEMA(opaqueSchema)->ignored.insert(type);
+}
+
+extern "C" void sakls_Schema_delete(void *opaqueSchema) {
+  delete SCHEMA(opaqueSchema);
+}
+
+#undef SCHEMA

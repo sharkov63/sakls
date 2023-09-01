@@ -38,18 +38,30 @@ public:
 
   /// \brief Create a SAKLS engine.
   ///
-  /// Created engine is inactive (see Engine state).
+  /// Created engine is inactive (see Engine state)
+  /// and has default schema and schema translator which are empty.
   ///
   /// \param layoutBackend Layout backend for the engine to use.
-  /// \param schema High-level SAKLS schema, which configures the engine.
+  Engine(ILayoutBackend &layoutBackend) noexcept;
+
+  /// \brief Set Schema translator of this Engine.
+  ///
   /// \param translator Schema translator, which translates string syntax node
   /// types (seen in high-level schema) into integer syntax node types
-  /// (used in Engine for computations). In case when the user is also aware
-  /// about the translation, and passes integer syntax node types in calls to
-  /// Engine API, the user must guarantee that this translation is valid during
-  /// the whole lifetime of the Engine.
-  Engine(ILayoutBackend &layoutBackend, Schema schema = Schema(),
-         SchemaTranslator translator = SchemaTranslator()) noexcept;
+  /// (used in Engine for computations).
+  ///
+  /// In case when the user is also aware about the translation, and passes
+  /// integer syntax node types in calls to Engine API, the user must guarantee
+  /// that this translation is valid during the whole lifetime of the Engine.
+  void setSchemaTranslator(SchemaTranslator translator);
+
+  /// \brief Configure Engine algorithm by a SAKLS Schema.
+  ///
+  /// The passed high-level schema contains string syntax node types,
+  /// they are converted to integer syntax node types by Schema #translator.
+  ///
+  /// \param schema High-level SAKLS schema.
+  void useSchema(const Schema &schema);
 
   /// \brief Set the Engine state to inactive.
   void reset();
@@ -78,6 +90,7 @@ public:
   /// hasn't been changed.
   void setNewSyntaxStack(SyntaxStackRef synStack, bool force = false);
 
+  /// Make SAKLS Engine log to a file #logFile.
   void setLogging(std::filesystem::path logFile);
 
   /// @}
@@ -85,6 +98,7 @@ public:
 protected:
   /// The layout backend, which handles layout switching demanded by the Engine.
   ILayoutBackend &layoutBackend;
+
   /// \brief Translates string syntax node types into integers.
   ///
   /// If user introduces new string syntax node types through Engine API,
@@ -119,8 +133,6 @@ protected:
   void keepUp();
 
   void setLayout(LayoutID layout);
-
-  void configure(const Schema &schema);
 
   SyntaxNode getRelevantTop(SyntaxStackRef synStack) const;
 };

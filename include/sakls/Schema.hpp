@@ -34,8 +34,6 @@ struct Schema {
 
   /// Serialization method for cereal library.
   template <typename Archive> void serialize(Archive &archive);
-
-  static Schema fromCSchema(sakls_Schema cSchema);
 };
 
 /// Translates high-level schema into low-level representation for SAKLS engine.
