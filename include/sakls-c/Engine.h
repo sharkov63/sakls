@@ -52,6 +52,8 @@ int sakls_Engine_setNewSyntaxStack(void *engine,
                                    struct sakls_SyntaxStackRef synStack,
                                    int force);
 
+void sakls_Engine_setLogging(void *engine, const char *logFilePath);
+
 /// \brief Destroy a SAKLS engine.
 ///
 /// \param engine Pointer to SAKLS engine to destroy.

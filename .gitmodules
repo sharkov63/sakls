@@ -7,3 +7,6 @@
 [submodule "lib/LayoutBackends/XkbSwitch/third-party/xkb-switch"]
 	path = lib/LayoutBackends/XkbSwitch/third-party/xkb-switch
 	url = https://github.com/grwlf/xkb-switch.git
+[submodule "lib/third-party/spdlog"]
+	path = lib/third-party/spdlog
+	url = https://github.com/gabime/spdlog.git

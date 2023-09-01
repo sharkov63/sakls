@@ -9,7 +9,14 @@
 #include "sakls/Schema.hpp"
 #include "sakls/Syntax.hpp"
 
+#include <filesystem>
 #include <optional>
+
+namespace spdlog {
+
+class logger;
+
+} // namespace spdlog
 
 namespace sakls {
 
@@ -73,6 +80,8 @@ public:
   /// hasn't been changed.
   void setNewSyntaxStack(SyntaxStackRef synStack, bool force = false);
 
+  void setLogging(std::filesystem::path logFile);
+
   /// @}
 
 protected:
@@ -83,6 +92,8 @@ protected:
   /// If user introduces new string syntax node types through Engine API,
   /// #translator will assign them new integers.
   SchemaTranslator translator;
+
+  std::shared_ptr<spdlog::logger> logger;
 
   /// @name Engine State.
   /// At any point of time, a SAKLS engine can be either active, or inactive.
@@ -108,6 +119,8 @@ protected:
   /// @}
 
   void keepUp();
+
+  void setLayout(LayoutID layout);
 
   void configure(const Schema &schema);
 
