@@ -6,6 +6,10 @@
 
 #include <cassert>
 
+#include "spdlog/fmt/std.h"
+#include "spdlog/logger.h"
+#include "spdlog/sinks/basic_file_sink.h"
+
 using namespace sakls;
 
 //===---------------------------------------------------------------------===//
@@ -16,6 +20,24 @@ Engine::Engine(ILayoutBackend &layoutBackend, const Schema &schema,
                SchemaTranslator translator) noexcept
     : layoutBackend(layoutBackend), translator(std::move(translator)) {
   configure(schema);
+}
+
+void Engine::keepUp() {
+  if (!node)
+    return;
+  auto it = memorized.find(node->type);
+  if (it == memorized.end())
+    return;
+  it->second = layoutBackend.getLayout();
+  if (logger)
+    logger->trace("keepUp memorized node={} to layout={}", node->type,
+                  it->second);
+}
+
+void Engine::setLayout(LayoutID layout) {
+  layoutBackend.setLayout(layout);
+  if (logger)
+    logger->trace("setLayout {}", layout);
 }
 
 void Engine::configure(const Schema &schema) {
@@ -40,41 +62,47 @@ SyntaxNode Engine::getRelevantTop(SyntaxStackRef synStack) const {
   return SyntaxNode();
 }
 
-void Engine::keepUp() {
-  if (!node)
-    return;
-  auto it = memorized.find(node->type);
-  if (it != memorized.end())
-    it->second = layoutBackend.getLayout();
-}
-
 void Engine::reset() {
   keepUp();
   node.reset();
+  if (logger)
+    logger->trace("reset");
 }
 
 void Engine::setNewSyntaxNode(SyntaxNode newNode, bool force) {
-  if (node && !force && newNode.type == node->type)
+  if (logger)
+    logger->trace("setNewSyntaxNode: newNode={}, force={}, currentLayout = {}",
+                  newNode.type, force, layoutBackend.getLayout());
+  if (node && !force && newNode.type == node->type) {
+    if (logger)
+      logger->trace("setNewSyntaxNode: force=false and same node type {}",
+                    node->type);
     return;
+  }
   keepUp();
   node = newNode;
   SyntaxNodeType newType = newNode.type;
   if (auto forcedIt = forced.find(newType); forcedIt != forced.end()) {
-    layoutBackend.setLayout(forcedIt->second);
+    setLayout(forcedIt->second);
     return;
   }
   if (auto memorizedIt = memorized.find(newType);
       memorizedIt != memorized.end()) {
-    layoutBackend.setLayout(memorizedIt->second);
+    setLayout(memorizedIt->second);
     return;
   }
   assert(!forced.count(newNode.type));
   memorized.emplace(newType, layoutBackend.getDefaultLayout());
-  layoutBackend.setLayout(layoutBackend.getDefaultLayout());
+  setLayout(layoutBackend.getDefaultLayout());
 }
 
 void Engine::setNewSyntaxStack(SyntaxStackRef synStack, bool force) {
   setNewSyntaxNode(getRelevantTop(synStack), force);
+}
+
+void Engine::setLogging(std::filesystem::path logFile) {
+  logger = spdlog::basic_logger_mt("SAKLS Engine", std::move(logFile));
+  logger->set_level(spdlog::level::trace);
 }
 
 //===----------------------------------------------------------------------===//
@@ -102,6 +130,7 @@ extern "C" int sakls_Engine_setNewSyntaxNode(void *opaqueEngine,
                                              int force) {
   try {
     ENGINE(opaqueEngine)->setNewSyntaxNode(newNode, force);
+    return 0;
   } catch (...) {
   }
   return -1;
@@ -111,6 +140,17 @@ extern "C" int sakls_Engine_setNewSyntaxStack(
     void *opaqueEngine, struct sakls_SyntaxStackRef synStack, int force) {
   try {
     ENGINE(opaqueEngine)->setNewSyntaxStack(synStack, force);
+    return 0;
+  } catch (...) {
+  }
+  return -1;
+}
+
+extern "C" int sakls_Engine_setLogging(void *opaqueEngine,
+                                       const char *logFilePath) {
+  try {
+    ENGINE(opaqueEngine)->setLogging(logFilePath);
+    return 0;
   } catch (...) {
   }
   return -1;

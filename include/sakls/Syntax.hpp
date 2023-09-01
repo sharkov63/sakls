@@ -17,6 +17,11 @@ using SyntaxNodeType = sakls_SyntaxNodeType;
 
 using SyntaxNode = sakls_SyntaxNode;
 
+// For spdlog
+inline SyntaxNodeType format_as(SyntaxNode node) { // NOLINT
+  return node.type;
+}
+
 /// A non-owning reference to a syntax stack:
 /// a convenience STL-like container wrapper around sakls_SyntaxStackRef.
 ///
