@@ -19,6 +19,16 @@ using namespace sakls;
 Engine::Engine(ILayoutBackend &layoutBackend) noexcept
     : layoutBackend(layoutBackend) {}
 
+void Engine::setMemorized(SyntaxNodeType nodeType, LayoutID defaultLayout) {
+  memorized[nodeType] = defaultLayout;
+}
+
+void Engine::setForced(SyntaxNodeType nodeType, LayoutID layout) {
+  forced[nodeType] = layout;
+}
+
+void Engine::setIgnored(SyntaxNodeType nodeType) { ignored.insert(nodeType); }
+
 void Engine::setSchemaTranslator(SchemaTranslator translator) {
   this->translator = std::move(translator);
 }
@@ -117,6 +127,23 @@ void Engine::setLogging(std::filesystem::path logFile) {
 
 extern "C" void *sakls_Engine_create(void *layoutBackend) {
   return new Engine(*reinterpret_cast<ILayoutBackend *>(layoutBackend));
+}
+
+extern "C" void sakls_Engine_setMemorized(void *opaqueEngine,
+                                          sakls_SyntaxNodeType nodeType,
+                                          sakls_LayoutID defaultLayout) {
+  ENGINE(opaqueEngine)->setMemorized(nodeType, defaultLayout);
+}
+
+extern "C" void sakls_Engine_setForced(void *opaqueEngine,
+                                       sakls_SyntaxNodeType nodeType,
+                                       sakls_LayoutID layout) {
+  ENGINE(opaqueEngine)->setForced(nodeType, layout);
+}
+
+extern "C" void sakls_Engine_setIgnored(void *opaqueEngine,
+                                        sakls_SyntaxNodeType nodeType) {
+  ENGINE(opaqueEngine)->setIgnored(nodeType);
 }
 
 extern "C" int sakls_Engine_reset(void *opaqueEngine) {

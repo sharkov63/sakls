@@ -22,6 +22,14 @@ SAKLS_EXTERN_C_BEGIN
 /// Ownership of the layout backend is not taken.
 void *sakls_Engine_create(void *layoutBackend);
 
+void sakls_Engine_setMemorized(void *engine, sakls_SyntaxNodeType nodeType,
+                               sakls_LayoutID defaultLayout);
+
+void sakls_Engine_setForced(void *engine, sakls_SyntaxNodeType nodeType,
+                            sakls_LayoutID layout);
+
+void sakls_Engine_setIgnored(void *engine, sakls_SyntaxNodeType nodeType);
+
 /// \brief Set Schema translator of this Engine.
 ///
 /// \param engine Pointer to the SAKLS engine.

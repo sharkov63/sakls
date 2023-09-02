@@ -44,6 +44,12 @@ public:
   /// \param layoutBackend Layout backend for the engine to use.
   Engine(ILayoutBackend &layoutBackend) noexcept;
 
+  void setMemorized(SyntaxNodeType nodeType, LayoutID defaultLayout);
+
+  void setForced(SyntaxNodeType nodeType, LayoutID layout);
+
+  void setIgnored(SyntaxNodeType nodeType);
+
   /// \brief Set Schema translator of this Engine.
   ///
   /// \param translator Schema translator, which translates string syntax node
